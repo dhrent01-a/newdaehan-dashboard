@@ -67,7 +67,7 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--bg);}
 
 /* ── Inputs ── */
-input[type=text],input[type=url],input[type=number],select,textarea{
+input[type=text],input[type=url],input[type=number],input[type=date],select,textarea{
   border:1px solid var(--border);border-radius:6px;padding:5px 9px;
   font-size:13px;font-family:var(--sans);background:var(--surface);color:var(--text);outline:none;}
 input:focus,select:focus{border-color:var(--green);}
@@ -90,6 +90,7 @@ input[type=number]{font-family:var(--mono);}
 .s-wip {background:#fdf6e3;color:#b07c10;border-color:#e5d090;font-weight:500;}
 .s-plan{background:#f0efe9;color:#9e9c93;border-color:#cccab8;}
 .s-none{background:#fff5f5;color:#b03030;border-color:#f5cccc;}
+.s-appr{background:#e8f3ed;color:#1a6b4a;border-color:#a8d4be;font-weight:500;}
 .sel-month{font-family:var(--mono);font-size:12px;padding:4px 5px;width:66px;}
 
 /* ── NOTICE 배너 ── */
@@ -106,7 +107,6 @@ input[type=number]{font-family:var(--mono);}
 .half{background:var(--surface2);border-radius:8px;padding:13px 15px;}
 .half-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;justify-content:space-between;}
 .counts{display:flex;gap:20px;}
-.cnt-val{font-size:22px;font-weight:700;font-family:var(--mono);}
 .cnt-label{font-size:11px;color:var(--text3);margin-top:2px;}
 
 /* ── OSMU Flow ── */
@@ -153,9 +153,10 @@ input[type=number]{font-family:var(--mono);}
 /* ── Info box ── */
 .info-box{background:var(--info-light);border:1px solid #c5d9ee;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--info);display:flex;gap:8px;}
 
-/* ── word-link ── */
-.wl{color:var(--info);font-size:13px;text-decoration:none;}
-.wl:hover{text-decoration:underline;}
+/* ── Link btn in table ── */
+.link-btn{padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:var(--surface2);font-size:11px;cursor:pointer;color:var(--text2);white-space:nowrap;}
+.link-btn:hover{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.link-btn.has-url{background:var(--green-light);color:var(--green);border-color:var(--green);}
 
 @media(max-width:768px){
   .hdr,.nav,.main{padding-left:14px;padding-right:14px;}
@@ -173,68 +174,23 @@ input[type=number]{font-family:var(--mono);}
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div class="gs-btn" id="gs-status-btn" onclick="openGS()"><div class="gs-dot" id="gs-dot"></div><span id="gs-label">구글시트</span></div>
-    <button class="gs-btn" onclick="showGsSetup()" style="font-size:11px;padding:4px 10px;gap:4px;">⚙ 연동설정</button>
+    <button class="gs-btn" onclick="showGsSetup()" style="font-size:11px;padding:4px 10px;">⚙ 연동설정</button>
     <div class="sync-time" id="sync-time">불러오는 중…</div>
   </div>
 </div>
 
 <nav class="nav">
-  <button class="tab on"  onclick="go('booking',this)">① 월별 예약 전환율</button>
-  <button class="tab"     onclick="go('osmu',this)">② OSMU 콘텐츠 현황 <span class="tab-cnt" id="cnt-osmu">0</span></button>
-  <button class="tab"     onclick="go('sync',this)">③ 공지 동기화 <span class="tab-cnt" id="cnt-sync">0/5</span></button>
-  <button class="tab"     onclick="go('urls',this)">④ 채널별 URL 관리</button>
+  <button class="tab on" onclick="go('osmu',this)">① OSMU 콘텐츠 현황 <span class="tab-cnt" id="cnt-osmu">0</span></button>
+  <button class="tab"    onclick="go('trip',this)">② 출장 플랜</button>
+  <button class="tab"    onclick="go('booking',this)">③ 월별 예약 전환율</button>
+  <button class="tab"    onclick="go('sync',this)">④ 공지 동기화 <span class="tab-cnt" id="cnt-sync">0/5</span></button>
+  <button class="tab"    onclick="go('urls',this)">⑤ 채널별 URL 관리</button>
 </nav>
 
 <div class="main">
 
-<!-- ① 예약 전환율 -->
-<div id="sheet-booking" class="sheet on">
-
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-    <span style="font-size:12px;color:var(--text2);">비교 플랫폼</span>
-    <input type="text" id="platform-name" value="카카오T" style="width:110px;font-weight:600;" oninput="syncPlatformLabel()">
-    <span style="font-size:12px;color:var(--text3);">— 상위 플랫폼 1개 vs 자사 직접 예약 비교</span>
-  </div>
-
-  <div class="metrics">
-    <div class="metric"><div class="met-label">이번달 총 예약</div><div class="met-val" id="bm-total">840</div><div class="met-sub">건</div></div>
-    <div class="metric"><div class="met-label" id="bm-plat-label">카카오T 예약</div><div class="met-val o" id="bm-plat">380</div><div class="met-sub"><span id="bm-plat-rate">45.2%</span></div></div>
-    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="bm-direct">310</div><div class="met-sub"><span id="bm-direct-rate">36.9%</span></div></div>
-    <div class="metric"><div class="met-label">자사 vs 플랫폼</div><div class="met-val o" id="bm-gap">−70건</div><div class="met-sub"><span id="bm-diff" class="up">↑ 5.3%p</span> 전월비(자사)</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">월별 추이</div><div class="card-note">자사 직접 목표 50%</div></div>
-    <div class="bar-chart" id="bar-chart"></div>
-    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text3);">
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--green);display:inline-block;"></span>자사</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--orange);display:inline-block;"></span><span id="chart-plat-label">카카오T</span></span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--border);display:inline-block;"></span>나머지</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">월별 데이터 입력</div><div class="card-note">직접 입력 → 구글시트 반영</div></div>
-    <div class="tw">
-      <table>
-        <thead><tr><th>월</th><th>총 예약</th><th id="th-plat">카카오T</th><th>자사 직접</th><th>자사 비율</th><th>플랫폼 대비</th><th>전월 대비</th><th>메모</th></tr></thead>
-        <tbody id="booking-body">
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.01</td><td><input type="number" value="620" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="320" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="140" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">22.6%<div class="prog"><div class="prog-fill" style="width:22.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−180건</td><td class="td-diff gr" style="font-size:12px;font-family:var(--mono);">기준</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.02</td><td><input type="number" value="710" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="350" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="220" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.0%<div class="prog"><div class="prog-fill" style="width:31%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−130건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 8.4%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.03</td><td><input type="number" value="790" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="370" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="250" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.6%<div class="prog"><div class="prog-fill" style="width:31.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−120건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 0.6%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;font-weight:700;">2025.04</td><td><input type="number" value="840" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="380" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="310" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate g" style="font-weight:700;">36.9%<div class="prog"><div class="prog-fill" style="width:36.9%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;font-weight:700;">−70건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 5.3%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="btn-row">
-      <button class="btn" onclick="addBookingRow()">+ 월 추가</button>
-      <button class="btn btn-g" onclick="saveAll()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- ② OSMU 콘텐츠 현황 -->
-<div id="sheet-osmu" class="sheet">
+<!-- ① OSMU 콘텐츠 현황 -->
+<div id="sheet-osmu" class="sheet on">
 
   <div class="metrics">
     <div class="metric"><div class="met-label">총 콘텐츠</div><div class="met-val" id="m-total">0</div><div class="met-sub">이번달 기획/진행</div></div>
@@ -245,6 +201,31 @@ input[type=number]{font-family:var(--mono);}
 
   <!-- 이번달 시즈널 이슈 배너 -->
   <div id="notice-banner"></div>
+
+  <!-- 블로그 누적 게시글 집계 -->
+  <div class="card" style="padding:14px 22px;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#03C75A;flex-shrink:0;"></div>
+        <span style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;">네이버 블로그 누적 게시글</span>
+        <span style="font-size:11px;color:var(--text3);">· 연간 작업물 + 콘텐츠 현황 블로그 완료 합산</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:22px;">
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--green);" id="blog-total-done">0</div>
+          <div style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:2px;"><span style="width:7px;height:7px;border-radius:2px;background:var(--green);display:inline-block;"></span>발행완료</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--orange);" id="blog-total-ready">0</div>
+          <div style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:2px;"><span style="width:7px;height:7px;border-radius:2px;background:var(--orange);display:inline-block;"></span>예약대기</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--text);" id="blog-total-all">0</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">총 합계</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 블로그 연간 작업물 -->
   <div class="card">
@@ -323,42 +304,55 @@ input[type=number]{font-family:var(--mono);}
 
   <!-- 콘텐츠 현황 -->
   <div class="card">
-    <div class="card-hdr"><div class="card-title">콘텐츠 현황</div><div class="card-note">유튜브 기준 · 주제 클릭 시 WORD 문서 연동</div></div>
+    <div class="card-hdr"><div class="card-title">콘텐츠 현황</div><div class="card-note">주제 클릭 → 기획안 문서 · ▶ 클릭 → 유튜브 게시 링크</div></div>
     <div class="tw">
       <table>
         <thead>
           <tr>
             <th style="min-width:66px;">월</th>
-            <th style="min-width:140px;">주제 (WORD)</th>
+            <th style="min-width:200px;">주제 (기획안)</th>
             <th style="min-width:46px;">YT<br>메인</th>
             <th style="min-width:46px;">YT<br>숏츠</th>
             <th>인스타</th><th>쓰레드</th><th>블로그</th>
-            <th style="min-width:118px;">대표 URL</th>
-            <th></th>
+            <th style="min-width:70px;"></th>
           </tr>
         </thead>
         <tbody id="osmu-body">
           <tr>
             <td><select class="sel-month"><option>01월</option><option>02월</option><option>03월</option><option selected>04월</option><option>05월</option><option>06월</option><option>07월</option><option>08월</option><option>09월</option><option>10월</option><option>11월</option><option>12월</option></select></td>
-            <td><a href="#" onclick="openWord(this,event)" data-url="" class="wl">제주 공항 픽업 브이로그 ✎</a> <button class="btn btn-sm" onclick="editWord(this.previousElementSibling)" style="font-size:10px;padding:2px 6px;color:var(--text2);">수정</button></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <a href="#" class="doc-link" data-url="" onclick="openDocLink(this,event)" style="flex:1;font-size:13px;color:var(--info);text-decoration:none;">제주 공항 픽업 브이로그</a>
+                <button class="link-btn" data-url="" onclick="openPubLink(this)" title="유튜브 게시 링크" style="font-size:14px;padding:2px 6px;border-radius:5px;">▶</button>
+              </div>
+            </td>
             <td><input type="number" value="1" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
             <td><input type="number" value="2" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>완료</option><option>편집중</option><option>기획</option><option>미예정</option></select></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>완료</option><option>편집중</option><option>기획</option><option>미예정</option></select></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>완료</option><option>편집중</option><option>기획</option><option>미예정</option></select></td>
-            <td><input type="url" placeholder="URL" style="width:118px;"></td>
-            <td><button class="btn btn-sm" onclick="delRow(this)" style="color:var(--red);border-color:#ecc;">✕</button></td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-sm" onclick="editOsmuRow(this)" style="color:var(--text2);">수정</button>
+              <button class="btn btn-sm" onclick="delRowConfirm(this)" style="color:var(--red);border-color:#ecc;margin-left:3px;">✕</button>
+            </td>
           </tr>
           <tr>
             <td><select class="sel-month"><option>01월</option><option>02월</option><option>03월</option><option selected>04월</option><option>05월</option><option>06월</option><option>07월</option><option>08월</option><option>09월</option><option>10월</option><option>11월</option><option>12월</option></select></td>
-            <td><a href="#" onclick="openWord(this,event)" data-url="" class="wl">제주 동쪽 드라이브 코스 ✎</a> <button class="btn btn-sm" onclick="editWord(this.previousElementSibling)" style="font-size:10px;padding:2px 6px;color:var(--text2);">수정</button></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <a href="#" class="doc-link" data-url="" onclick="openDocLink(this,event)" style="flex:1;font-size:13px;color:var(--info);text-decoration:none;">제주 동쪽 드라이브 코스</a>
+                <button class="link-btn" data-url="" onclick="openPubLink(this)" title="유튜브 게시 링크" style="font-size:14px;padding:2px 6px;border-radius:5px;">▶</button>
+              </div>
+            </td>
             <td><input type="number" value="1" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
             <td><input type="number" value="0" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>편집중</option><option>완료</option><option>기획</option><option>미예정</option></select></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>완료</option><option>편집중</option><option>기획</option><option>미예정</option></select></td>
             <td><select class="ss" onchange="colorSel(this);calcOsmu()"><option>편집중</option><option>완료</option><option>기획</option><option>미예정</option></select></td>
-            <td><input type="url" placeholder="URL" style="width:118px;"></td>
-            <td><button class="btn btn-sm" onclick="delRow(this)" style="color:var(--red);border-color:#ecc;">✕</button></td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-sm" onclick="editOsmuRow(this)" style="color:var(--text2);">수정</button>
+              <button class="btn btn-sm" onclick="delRowConfirm(this)" style="color:var(--red);border-color:#ecc;margin-left:3px;">✕</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -370,7 +364,98 @@ input[type=number]{font-family:var(--mono);}
   </div>
 </div>
 
-<!-- ③ 공지 동기화 -->
+<!-- ② 출장 플랜 -->
+<div id="sheet-trip" class="sheet">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-title">출장 플랜</div>
+      <div class="card-note">회차 · 촬영 일정 · 콘텐츠 수 · 세부계획 · 승인 현황</div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width:50px;">회차</th>
+            <th style="min-width:120px;">출발일</th>
+            <th style="min-width:120px;">도착일</th>
+            <th style="min-width:60px;">콘텐츠<br>개수</th>
+            <th style="min-width:180px;">세부 계획 (문서)</th>
+            <th style="min-width:90px;">승인 상태</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="trip-body">
+          <tr>
+            <td><input type="text" placeholder="1회차" style="width:54px;text-align:center;"></td>
+            <td><input type="date" style="width:130px;font-family:var(--mono);font-size:12px;"></td>
+            <td><input type="date" style="width:130px;font-family:var(--mono);font-size:12px;"></td>
+            <td><input type="number" value="0" min="0" style="width:54px;text-align:center;"></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <a href="#" class="doc-link" data-url="" onclick="openDocLink(this,event)" style="flex:1;font-size:12px;color:var(--info);text-decoration:none;">문서 제목 미입력</a>
+                <button class="btn btn-sm" onclick="editTripDoc(this)" style="color:var(--text2);">수정</button>
+              </div>
+            </td>
+            <td><select class="ss s-none" onchange="colorSel(this)"><option>미승인</option><option>승인</option><option>완료</option></select></td>
+            <td><button class="btn btn-sm" onclick="if(confirm('이 일정을 삭제하시겠습니까?')) this.closest('tr').remove()" style="color:var(--red);border-color:#ecc;">✕</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="addTripRow()">+ 일정 추가</button>
+      <button class="btn btn-g" onclick="saveAll()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ③ 월별 예약 전환율 -->
+<div id="sheet-booking" class="sheet">
+
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:12px;color:var(--text2);">비교 플랫폼</span>
+    <input type="text" id="platform-name" value="카카오T" style="width:110px;font-weight:600;" oninput="syncPlatformLabel()">
+    <span style="font-size:12px;color:var(--text3);">— 상위 플랫폼 1개 vs 자사 직접 예약 비교</span>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="met-label">이번달 총 예약</div><div class="met-val" id="bm-total">840</div><div class="met-sub">건</div></div>
+    <div class="metric"><div class="met-label" id="bm-plat-label">카카오T 예약</div><div class="met-val o" id="bm-plat">380</div><div class="met-sub"><span id="bm-plat-rate">45.2%</span></div></div>
+    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="bm-direct">310</div><div class="met-sub"><span id="bm-direct-rate">36.9%</span></div></div>
+    <div class="metric"><div class="met-label">자사 vs 플랫폼</div><div class="met-val o" id="bm-gap">−70건</div><div class="met-sub"><span id="bm-diff" class="up">↑ 5.3%p</span> 전월비(자사)</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">월별 추이</div><div class="card-note">자사 직접 목표 50%</div></div>
+    <div class="bar-chart" id="bar-chart"></div>
+    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text3);">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--green);display:inline-block;"></span>자사</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--orange);display:inline-block;"></span><span id="chart-plat-label">카카오T</span></span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--border);display:inline-block;"></span>나머지</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">월별 데이터 입력</div><div class="card-note">직접 입력 → 구글시트 반영</div></div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>월</th><th>총 예약</th><th id="th-plat">카카오T</th><th>자사 직접</th><th>자사 비율</th><th>플랫폼 대비</th><th>전월 대비</th><th>메모</th></tr></thead>
+        <tbody id="booking-body">
+          <tr><td style="font-family:var(--mono);font-size:12px;">2025.01</td><td><input type="number" value="620" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="320" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="140" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">22.6%<div class="prog"><div class="prog-fill" style="width:22.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−180건</td><td class="td-diff gr" style="font-size:12px;font-family:var(--mono);">기준</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
+          <tr><td style="font-family:var(--mono);font-size:12px;">2025.02</td><td><input type="number" value="710" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="350" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="220" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.0%<div class="prog"><div class="prog-fill" style="width:31%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−130건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 8.4%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
+          <tr><td style="font-family:var(--mono);font-size:12px;">2025.03</td><td><input type="number" value="790" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="370" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="250" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.6%<div class="prog"><div class="prog-fill" style="width:31.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−120건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 0.6%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
+          <tr><td style="font-family:var(--mono);font-size:12px;font-weight:700;">2025.04</td><td><input type="number" value="840" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="380" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="310" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate g" style="font-weight:700;">36.9%<div class="prog"><div class="prog-fill" style="width:36.9%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;font-weight:700;">−70건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 5.3%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="addBookingRow()">+ 월 추가</button>
+      <button class="btn btn-g" onclick="saveAll()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ④ 공지 동기화 -->
 <div id="sheet-sync" class="sheet">
   <div class="card">
     <div class="card-hdr"><div class="card-title">FAQ / 기준 파일</div><div class="card-note">공지 작성 전 참고</div></div>
@@ -429,9 +514,9 @@ input[type=number]{font-family:var(--mono);}
   </div>
 </div>
 
-<!-- ④ URL 관리 -->
+<!-- ⑤ URL 관리 -->
 <div id="sheet-urls" class="sheet">
-  <div class="info-box">🔗 <span>URL 저장 후 OSMU 흐름도에서 채널 바로 이동 가능. 임원 공유는 구글시트 <strong>뷰어</strong> 링크로 공유하세요.</span></div>
+  <div class="info-box">🔗 <span>URL 저장 후 OSMU 흐름도에서 채널 바로 이동 가능.</span></div>
   <div class="card">
     <div class="url-group">
       <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>자사 홈페이지</div>
@@ -466,8 +551,8 @@ input[type=number]{font-family:var(--mono);}
     </div>
     <div class="url-group" style="background:#f0efe9;border-radius:8px;padding:13px 15px;border:1.5px solid var(--green);margin-top:4px;">
       <div class="url-group-title" style="color:var(--green);">⚡ Apps Script 웹앱 연동 URL</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Apps Script 배포 후 생성된 웹앱 URL을 입력하세요. 저장하면 모든 기기에서 데이터가 동기화됩니다.</div>
-      <div class="url-row"><div class="url-label" style="min-width:90px;">웹앱 URL</div><input type="url" id="url-apps-script" style="flex:1;" placeholder="https://script.google.com/macros/s/…/exec"><button class="open-btn" onclick="testGsConnection()" style="white-space:nowrap;">연결 테스트</button></div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">연동 URL이 코드에 고정되어 있습니다. 변경 시 개발자에게 문의하세요.</div>
+      <div class="url-row"><div class="url-label" style="min-width:90px;">현재 URL</div><input type="text" value="설정됨 (코드 내장)" style="flex:1;" readonly><button class="open-btn" onclick="testGsConnection()">연결 테스트</button></div>
       <div id="gs-test-result" style="font-size:12px;margin-top:6px;display:none;"></div>
     </div>
     <div class="btn-row"><button class="btn btn-g" onclick="saveUrls()">URL 전체 저장</button></div>
@@ -477,365 +562,36 @@ input[type=number]{font-family:var(--mono);}
 </div><!-- /main -->
 
 <script>
-/* ── 대한민국 월별 시즈널 이슈 ── */
-const SEASONAL = {
-  1:  { items:['1/1 신정','설 연휴'], high:false },
-  2:  { items:['설 연휴','겨울 시즌'], high:false },
-  3:  { items:['3/1 삼일절','봄 시즌 개막','유채꽃 시즌'], high:true },
-  4:  { items:['벚꽃 시즌','봄 성수기 예약 급증'], high:true },
-  5:  { items:['5/5 어린이날','5/8 어버이날','부처님오신날','가족 여행 성수기'], high:true },
-  6:  { items:['6/6 현충일','여름 준비 시즌'], high:false },
-  7:  { items:['여름 최대 성수기','해수욕장 드라이브 코스'], high:true },
-  8:  { items:['8/15 광복절','여름 극성수기'], high:true },
-  9:  { items:['추석 연휴','가을 시즌 개막'], high:true },
-  10: { items:['10/3 개천절','10/9 한글날','단풍 시즌'], high:true },
-  11: { items:['비수기 시작','가성비 여행 콘텐츠 집중'], high:false },
-  12: { items:['12/25 크리스마스','연말 연휴'], high:false },
-};
-
-/* ── 이번달 NOTICE 배너 ── */
-function renderBanner() {
-  const banner = document.getElementById('notice-banner');
-  if (!banner) return;
-  const m = new Date().getMonth() + 1;
-  const s = SEASONAL[m];
-  if (!s) { banner.innerHTML = ''; return; }
-  const cls  = s.high ? 'notice-high' : 'notice-mid';
-  const icon = s.high ? '🔴' : '🟡';
-  banner.innerHTML = `
-    <div class="notice ${cls}">
-      <div class="notice-icon">${icon}</div>
-      <div>
-        <div class="notice-title"><span class="notice-dot"></span>${new Date().getFullYear()}년 ${m}월 시즈널 이슈</div>
-        <div class="notice-desc">${s.items.join(' &nbsp;·&nbsp; ')}</div>
-      </div>
-    </div>`;
-}
-
-/* ── 탭 전환 ── */
-function go(id, btn) {
-  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
-  document.getElementById('sheet-' + id).classList.add('on');
-  btn.classList.add('on');
-  if (id === 'booking') renderBarChart();
-}
-
-/* ── URL 유틸 ── */
-const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree','url-threads','url-kakao','url-youtube','url-gs-view','url-gs-edit','faq-url','rule-url','tmpl-url','url-apps-script'];
-function saveUrls() {
-  URL_IDS.forEach(k => { const el = document.getElementById(k); if (el) localStorage.setItem(k, el.value); });
-  tick(); alert('✅ URL 저장 완료');
-}
-function saveFaq() {
-  ['faq-url','rule-url','tmpl-url'].forEach(k => { const el = document.getElementById(k); if (el) localStorage.setItem(k, el.value); });
-  tick(); alert('✅ 파일 링크 저장 완료');
-}
-function loadUrls() {
-  URL_IDS.forEach(k => { const v = localStorage.getItem(k); const el = document.getElementById(k); if (v && el) el.value = v; });
-}
-function openU(id) { const u = document.getElementById(id)?.value.trim(); if (u) window.open(u,'_blank'); else alert('URL을 먼저 입력해주세요.'); }
-function openGS() { const u = document.getElementById('url-gs-view')?.value.trim(); if (u) window.open(u,'_blank'); else { go('urls', document.querySelectorAll('.tab')[3]); } }
-function flowGo(id, e) {
-  e.preventDefault();
-  const u = localStorage.getItem(id) || document.getElementById(id)?.value.trim();
-  if (u) window.open(u,'_blank');
-  else { alert('URL 관리 탭에서 해당 채널 URL을 먼저 저장해주세요.'); go('urls', document.querySelectorAll('.tab')[3]); }
-}
-
-/* ── 플랫폼명 동기화 ── */
-function syncPlatformLabel() {
-  const n = document.getElementById('platform-name').value || '상위 플랫폼';
-  ['bm-plat-label','th-plat','chart-plat-label'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = id === 'bm-plat-label' ? n + ' 예약' : n;
-  });
-}
-
-/* ── 예약 전환율 ── */
-function calcBooking(inp) {
-  const row = inp.closest('tr');
-  const total  = parseInt(row.querySelectorAll('input[type=number]')[0].value) || 0;
-  const plat   = parseInt(row.querySelector('.inp-p').value) || 0;
-  const direct = parseInt(row.querySelector('.inp-d').value) || 0;
-  const rate = total > 0 ? direct / total * 100 : 0;
-  const gap  = direct - plat;
-  row.querySelector('.td-rate').innerHTML = rate.toFixed(1) + '%<div class="prog"><div class="prog-fill" style="width:' + Math.min(rate,100).toFixed(1) + '%;"></div></div>';
-  const vs = row.querySelector('.td-vs');
-  vs.textContent = (gap >= 0 ? '+' : '') + gap + '건';
-  vs.className = 'td-vs ' + (gap >= 0 ? 'g' : 'o');
-  vs.style.cssText = 'font-family:var(--mono);font-size:12px;';
-  recalcDiffs(); updateBookingMetrics(); renderBarChart();
-}
-function recalcDiffs() {
-  const rows = document.querySelectorAll('#booking-body tr');
-  let prev = null;
-  rows.forEach(row => {
-    const t = parseInt(row.querySelectorAll('input[type=number]')[0]?.value) || 0;
-    const d = parseInt(row.querySelector('.inp-d')?.value) || 0;
-    const rate = t > 0 ? d / t * 100 : 0;
-    const dc = row.querySelector('.td-diff');
-    if (!dc) return;
-    if (prev === null) { dc.textContent = '기준'; dc.className = 'td-diff gr'; dc.style.cssText = 'font-size:12px;font-family:var(--mono);'; }
-    else {
-      const diff = rate - prev;
-      dc.textContent = (diff >= 0 ? '↑ ' : '↓ ') + Math.abs(diff).toFixed(1) + '%p';
-      dc.className = 'td-diff ' + (diff >= 0 ? 'up' : 'dn');
-      dc.style.cssText = 'font-size:12px;font-family:var(--mono);';
-    }
-    prev = rate;
-  });
-}
-function updateBookingMetrics() {
-  const rows = document.querySelectorAll('#booking-body tr');
-  if (!rows.length) return;
-  const last = rows[rows.length - 1];
-  const total  = parseInt(last.querySelectorAll('input[type=number]')[0]?.value) || 0;
-  const plat   = parseInt(last.querySelector('.inp-p')?.value) || 0;
-  const direct = parseInt(last.querySelector('.inp-d')?.value) || 0;
-  const gap = direct - plat;
-  document.getElementById('bm-total').textContent  = total;
-  document.getElementById('bm-plat').textContent   = plat;
-  document.getElementById('bm-direct').textContent = direct;
-  document.getElementById('bm-plat-rate').textContent   = (total > 0 ? (plat/total*100).toFixed(1) : 0) + '%';
-  document.getElementById('bm-direct-rate').textContent = (total > 0 ? (direct/total*100).toFixed(1) : 0) + '%';
-  document.getElementById('bm-gap').textContent = (gap >= 0 ? '+' : '') + gap + '건';
-  document.getElementById('bm-gap').className = 'met-val ' + (gap >= 0 ? 'g' : 'o');
-  if (rows.length >= 2) {
-    const prev = rows[rows.length - 2];
-    const pt = parseInt(prev.querySelectorAll('input[type=number]')[0]?.value) || 0;
-    const pd = parseInt(prev.querySelector('.inp-d')?.value) || 0;
-    const prevRate = pt > 0 ? pd/pt*100 : 0;
-    const currRate = total > 0 ? direct/total*100 : 0;
-    const diff = currRate - prevRate;
-    const el = document.getElementById('bm-diff');
-    el.textContent = (diff >= 0 ? '↑ ' : '↓ ') + Math.abs(diff).toFixed(1) + '%p';
-    el.className = diff >= 0 ? 'up' : 'dn';
-  }
-}
-function addBookingRow() {
-  const rows = document.querySelectorAll('#booking-body tr');
-  const last = rows[rows.length-1]?.querySelector('td')?.textContent || '2025.04';
-  const [y,m] = last.split('.').map(Number);
-  const nm = m===12?1:m+1, ny = m===12?y+1:y;
-  const label = ny + '.' + String(nm).padStart(2,'0');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td style="font-family:var(--mono);font-size:12px;">${label}</td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">0.0%<div class="prog"><div class="prog-fill" style="width:0%;"></div></div></td><td class="td-vs gr" style="font-family:var(--mono);font-size:12px;">0건</td><td class="td-diff gr" style="font-size:12px;font-family:var(--mono);">—</td><td><input type="text" placeholder="메모" style="width:88px;"></td>`;
-  document.getElementById('booking-body').appendChild(tr);
-  recalcDiffs(); renderBarChart();
-}
-function renderBarChart() {
-  const rows = document.querySelectorAll('#booking-body tr');
-  const c = document.getElementById('bar-chart');
-  if (!c) return;
-  c.innerHTML = '';
-  let maxT = 0;
-  const data = [];
-  rows.forEach(row => {
-    const label = row.querySelector('td').textContent.slice(5);
-    const t = parseInt(row.querySelectorAll('input[type=number]')[0]?.value)||0;
-    const p = parseInt(row.querySelector('.inp-p')?.value)||0;
-    const d = parseInt(row.querySelector('.inp-d')?.value)||0;
-    if (t > maxT) maxT = t;
-    data.push({label,t,p,d});
-  });
-  data.forEach(({label,t,p,d}) => {
-    const H=110, pct=maxT>0?t/maxT:0;
-    const g=document.createElement('div'); g.className='bar-group';
-    g.innerHTML=`<div class="bar-wrap"><div class="bar" style="height:${Math.round(pct*H)}px;background:var(--border);"></div><div class="bar" style="height:${Math.round(pct*(t>0?p/t:0)*H)}px;background:var(--orange);"></div><div class="bar" style="height:${Math.round(pct*(t>0?d/t:0)*H)}px;background:var(--green);"></div></div><div class="bar-label">${label}</div>`;
-    c.appendChild(g);
-  });
-}
-
-/* ── OSMU ── */
-function colorSel(sel) {
-  const map = {'완료':'s-done','편집중':'s-wip','기획':'s-plan','미예정':'s-none'};
-  sel.className = 'ss ' + (map[sel.value] || 's-plan');
-}
-function calcOsmu() {
-  const rows = document.querySelectorAll('#osmu-body tr');
-  let total=0, done=0, wip=0, plan=0;
-  rows.forEach(row => {
-    const allVals = Array.from(row.querySelectorAll('.ss')).map(s => s.value);
-    // 미예정 제외한 실제 채널만 판단
-    const active = allVals.filter(v => v !== '미예정');
-    if (active.length === 0) return; // 전부 미예정 → 카운팅 제외
-    total++;
-    if (active.every(v => v === '완료')) {
-      done++;
-    } else if (active.some(v => v === '기획') && !active.some(v => v === '완료' || v === '편집중')) {
-      plan++;
-    } else {
-      wip++;
-    }
-  });
-  document.getElementById('m-total').textContent = total;
-  document.getElementById('m-done').textContent  = done;
-  document.getElementById('m-wip').textContent   = wip;
-  document.getElementById('m-plan').textContent  = plan;
-  document.getElementById('cnt-osmu').textContent = total;
-}
-function addOsmuRow() {
-  const opts = '<option>기획</option><option>완료</option><option>편집중</option><option>미예정</option>';
-  const mOpts = ['01','02','03','04','05','06','07','08','09','10','11','12'].map(m=>`<option>${m}월</option>`).join('');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td><select class="sel-month">${mOpts}</select></td>
-    <td><a href="#" onclick="openWord(this,event)" data-url="" class="wl">새 콘텐츠 제목 ✎</a> <button class="btn btn-sm" onclick="editWord(this.previousElementSibling)" style="font-size:10px;padding:2px 6px;color:var(--text2);">수정</button></td>
-    <td><input type="number" value="0" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
-    <td><input type="number" value="0" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
-    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
-    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
-    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
-    <td><input type="url" placeholder="URL" style="width:118px;"></td>
-    <td><button class="btn btn-sm" onclick="delRow(this)" style="color:var(--red);border-color:#ecc;">✕</button></td>`;
-  document.getElementById('osmu-body').appendChild(tr);
-  calcOsmu();
-}
-function delRow(btn) { btn.closest('tr').remove(); calcOsmu(); }
-function openWord(el, e) {
-  e.preventDefault();
-  const u = el.getAttribute('data-url');
-  if (u) window.open(u, '_blank');
-  else editWord(el);
-}
-function editWord(el) {
-  const curTitle = el.getAttribute('data-title') || el.textContent.replace(' ✎','').trim();
-  const curUrl   = el.getAttribute('data-url') || '';
-  const newTitle = prompt('콘텐츠 제목:', curTitle === '새 콘텐츠 제목' ? '' : curTitle);
-  if (newTitle === null) return;
-  const newUrl = prompt('구글 Docs / WORD 링크:', curUrl);
-  if (newUrl === null) return;
-  if (newTitle.trim()) {
-    el.textContent = newTitle.trim() + ' ✎';
-    el.setAttribute('data-title', newTitle.trim());
-  }
-  if (newUrl.trim()) el.setAttribute('data-url', newUrl.trim());
-}
-
-/* ── 블로그 연간 카운터 (숫자 직접 입력) ── */
-function adjInp() {
-  const h1done  = Math.max(0, parseInt(document.getElementById('h1-done').value)  || 0);
-  const h1ready = Math.max(0, parseInt(document.getElementById('h1-ready').value) || 0);
-  const h2done  = Math.max(0, parseInt(document.getElementById('h2-done').value)  || 0);
-  const h2ready = Math.max(0, parseInt(document.getElementById('h2-ready').value) || 0);
-  const h1 = h1done + h1ready;
-  const h2 = h2done + h2ready;
-  document.getElementById('h1-total').textContent = h1;
-  document.getElementById('h2-total').textContent = h2;
-  const mx = Math.max(h1, h2, 1);
-  document.getElementById('h1-bar-done').style.width  = Math.round(h1done  / mx * 100) + '%';
-  document.getElementById('h1-bar-ready').style.width = Math.round(h1ready / mx * 100) + '%';
-  document.getElementById('h2-bar-done').style.width  = Math.round(h2done  / mx * 100) + '%';
-  document.getElementById('h2-bar-ready').style.width = Math.round(h2ready / mx * 100) + '%';
-}
-
-/* ── 공지 동기화 ── */
-function onChk(cb) {
-  cb.closest('.chk-item').classList.toggle('done', cb.checked);
-  // 유튜브(c6)는 "해당시" — 카운팅 제외
-  const boxes = document.querySelectorAll('#chk-list input[type=checkbox]:not(#c6)');
-  const checked = document.querySelectorAll('#chk-list input[type=checkbox]:not(#c6):checked').length;
-  document.getElementById('cnt-sync').textContent = checked + '/' + boxes.length;
-}
-/* ── 채널 정보 (동그라미 컬러/아이디/라벨) ── */
-const CH_INFO = [
-  { id:'c1', color:'#FEE500', border:'1px solid #ddd', label:'카카오' },
-  { id:'c2', color:'#E1306C', border:'none',           label:'인스타' },
-  { id:'c3', color:'#111111', border:'none',           label:'쓰레드' },
-  { id:'c4', color:'#03C75A', border:'none',           label:'블로그' },
-  { id:'c5', color:'#1a6b4a', border:'none',           label:'홈페이지' },
-  { id:'c6', color:'#FF0000', border:'none',           label:'유튜브' },
-];
-
-function doneSync() {
-  const title = document.getElementById('ntitle').value.trim();
-  if (!title) { alert('공지 제목을 입력해주세요.'); return; }
-  const type = document.getElementById('ntype').value;
-  const now  = new Date();
-  const date = (now.getMonth()+1)+'.'+String(now.getDate()).padStart(2,'0');
-
-  // 체크된 채널 동그라미 생성 (유튜브는 미예정으로 항상 회색)
-  let dots = '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">';
-  CH_INFO.forEach(ch => {
-    const cb = document.getElementById(ch.id);
-    if (cb?.checked) {
-      dots += `<span title="${ch.label}" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${ch.color};border:${ch.border};flex-shrink:0;"></span>`;
-    } else {
-      dots += `<span title="${ch.label}" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--border);flex-shrink:0;"></span>`;
-    }
-  });
-  dots += '</div>';
-
-  const tbody = document.getElementById('sync-log');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td style="font-family:var(--mono);font-size:12px;color:var(--text3);">${date}</td>
-    <td><span style="background:var(--orange-light);color:var(--orange);font-size:11px;padding:2px 8px;border-radius:10px;">${type}</span></td>
-    <td>${title}</td>
-    <td>${dots}</td>
-    <td><input type="text" placeholder="담당자" style="width:68px;"></td>
-    <td><button class="btn btn-sm" onclick="delLog(this)" style="color:var(--red);border-color:#ecc;">삭제</button></td>`;
-  tbody.insertBefore(tr, tbody.firstChild);
-  resetChk(); document.getElementById('ntitle').value=''; tick();
-}
-function resetChk() {
-  document.querySelectorAll('#chk-list input[type=checkbox]').forEach(cb => { cb.checked=false; cb.closest('.chk-item').classList.remove('done'); });
-  document.getElementById('cnt-sync').textContent = '0/5';
-}
-
-function delLog(btn) {
-  const row = btn.closest('tr');
-  const title = row.querySelectorAll('td')[2]?.textContent || '이 기록';
-  const ok = confirm(`⚠️ 공지 기록 삭제 확인\n\n"${title}"\n\n삭제 후 복구가 불가합니다.\n정말 삭제하시겠습니까?`);
-  if (ok) row.remove();
-}
-
 /* ══════════════════════════════════════════════
-   구글시트 양방향 연동
+   구글시트 연동
 ══════════════════════════════════════════════ */
-
-// Apps Script URL 고정 — 모든 기기/사용자 공통 적용
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwclQ2utVs05nNJ9MnS0c1PgPXvmVNWZsO_rOf6_toBUq5hP6HjViBdwbHnHrFFFWiM/exec';
-function getScriptUrl() {
-  return APPS_SCRIPT_URL;
-}
+
+function getScriptUrl() { return APPS_SCRIPT_URL; }
 
 function setGsStatus(state) {
-  // state: 'ok' | 'error' | 'loading' | 'none'
-  const dot   = document.getElementById('gs-dot');
+  const dot = document.getElementById('gs-dot');
   const label = document.getElementById('gs-label');
   if (!dot || !label) return;
-  const map = {
-    ok      : { color:'#4ade80', text:'시트 연동됨' },
-    error   : { color:'#f87171', text:'연동 오류' },
-    loading : { color:'#fbbf24', text:'동기화 중…' },
-    none    : { color:'#6b7280', text:'구글시트' },
-  };
+  const map = { ok:{color:'#4ade80',text:'시트 연동됨'}, error:{color:'#f87171',text:'연동 오류'}, loading:{color:'#fbbf24',text:'동기화 중…'}, none:{color:'#6b7280',text:'구글시트'} };
   const s = map[state] || map.none;
   dot.style.background = s.color;
+  dot.style.animation = state === 'ok' ? 'none' : 'pulse 2s infinite';
   label.textContent = s.text;
 }
 
-/* ── 시트에서 데이터 불러오기 (pull) ── */
 async function loadFromSheet() {
   const url = getScriptUrl();
   if (!url) { setGsStatus('none'); tick('로컬 모드'); return; }
   setGsStatus('loading');
   try {
-    // Apps Script는 리다이렉트를 거치므로 반드시 redirect:follow 필요
-    const res  = await fetch(url + '?action=load', {
-      method: 'GET',
-      redirect: 'follow',
-    });
+    const res  = await fetch(url + '?action=load', { method:'GET', redirect:'follow' });
     const text = await res.text();
     let json;
-    try { json = JSON.parse(text); } catch(e) { throw new Error('응답 파싱 실패: ' + text.slice(0,100)); }
+    try { json = JSON.parse(text); } catch(e) { throw new Error('응답 파싱 실패'); }
     if (!json.ok) throw new Error(json.error);
-
     const d = json.data;
 
-    // ── 예약 전환율 복원 ──
     if (d.booking && d.booking.length > 0) {
       const tbody = document.getElementById('booking-body');
       tbody.innerHTML = '';
@@ -846,7 +602,7 @@ async function loadFromSheet() {
         tr.innerHTML = `
           <td style="font-family:var(--mono);font-size:12px;">${r.month}</td>
           <td><input type="number" value="${r.total||0}" style="width:78px;" oninput="calcBooking(this)"></td>
-          <td><input type="number" value="${r.plat||0}"  style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td>
+          <td><input type="number" value="${r.plat||0}" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td>
           <td><input type="number" value="${r.direct||0}" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td>
           <td class="td-rate">${rate.toFixed(1)}%<div class="prog"><div class="prog-fill" style="width:${Math.min(rate,100).toFixed(1)}%;"></div></div></td>
           <td class="td-vs ${gap>=0?'g':'o'}" style="font-family:var(--mono);font-size:12px;">${gap>=0?'+':''}${gap}건</td>
@@ -857,7 +613,6 @@ async function loadFromSheet() {
       recalcDiffs(); updateBookingMetrics(); renderBarChart();
     }
 
-    // ── OSMU 복원 ──
     if (d.osmu) {
       if (d.osmu.rows && d.osmu.rows.length > 0) {
         const tbody = document.getElementById('osmu-body');
@@ -866,17 +621,26 @@ async function loadFromSheet() {
         const mOpts = ['01','02','03','04','05','06','07','08','09','10','11','12'].map(m=>`<option>${m}월</option>`).join('');
         d.osmu.rows.forEach(r => {
           const tr = document.createElement('tr');
+          const selMonth = mOpts.replace(`<option>${r.month}</option>`,`<option selected>${r.month}</option>`);
+          const mkSel = (val) => opts.replace(`<option>${val}</option>`,`<option selected>${val}</option>`);
+          const hasUrl = r.titleUrl ? 'has-url' : '';
           tr.innerHTML = `
-            <td><select class="sel-month">${mOpts.replace(`<option>${r.month}</option>`,`<option selected>${r.month}</option>`)}</select></td>
-            <td><a href="#" onclick="openWord(this,event)" data-url="${r.titleUrl||''}" data-title="${r.title||''}" class="wl">${r.title||'새 콘텐츠 제목'} ✎</a>
-                <button class="btn btn-sm" onclick="editWord(this.previousElementSibling)" style="font-size:10px;padding:2px 6px;color:var(--text2);">수정</button></td>
+            <td><select class="sel-month">${selMonth}</select></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <a href="#" class="doc-link" data-url="${r.titleUrl||''}" onclick="openDocLink(this,event)" style="flex:1;font-size:13px;color:var(--info);text-decoration:none;">${r.title||'제목 없음'}</a>
+                <button class="link-btn ${hasUrl}" data-url="${r.url||''}" onclick="openPubLink(this)" title="유튜브 게시 링크" style="font-size:14px;padding:2px 6px;border-radius:5px;">▶</button>
+              </div>
+            </td>
             <td><input type="number" value="${r.ytMain||0}" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
             <td><input type="number" value="${r.ytShort||0}" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
-            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts.replace(`<option>${r.insta}</option>`,`<option selected>${r.insta}</option>`)}</select></td>
-            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts.replace(`<option>${r.threads}</option>`,`<option selected>${r.threads}</option>`)}</select></td>
-            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts.replace(`<option>${r.blog}</option>`,`<option selected>${r.blog}</option>`)}</select></td>
-            <td><input type="url" value="${r.url||''}" placeholder="URL" style="width:118px;"></td>
-            <td><button class="btn btn-sm" onclick="delRow(this)" style="color:var(--red);border-color:#ecc;">✕</button></td>`;
+            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${mkSel(r.insta)}</select></td>
+            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${mkSel(r.threads)}</select></td>
+            <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${mkSel(r.blog)}</select></td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-sm" onclick="editOsmuRow(this)" style="color:var(--text2);">수정</button>
+              <button class="btn btn-sm" onclick="delRowConfirm(this)" style="color:var(--red);border-color:#ecc;margin-left:3px;">✕</button>
+            </td>`;
           tbody.appendChild(tr);
         });
         document.querySelectorAll('#osmu-body .ss').forEach(colorSel);
@@ -884,42 +648,37 @@ async function loadFromSheet() {
       }
       if (d.osmu.blog) {
         const b = d.osmu.blog;
-        const setVal = (id, v) => { const el = document.getElementById(id); if(el) el.value = v||0; };
-        setVal('h1-done', b.h1Done); setVal('h1-ready', b.h1Ready);
-        setVal('h2-done', b.h2Done); setVal('h2-ready', b.h2Ready);
+        ['h1-done','h1-ready','h2-done','h2-ready'].forEach((id,i) => {
+          const el = document.getElementById(id);
+          if (el) el.value = [b.h1Done,b.h1Ready,b.h2Done,b.h2Ready][i] || 0;
+        });
         adjInp();
       }
     }
 
-    // ── 공지 동기화 기록 복원 ──
     if (d.syncLog && d.syncLog.length > 0) {
       const tbody = document.getElementById('sync-log');
-      // 기존 샘플 행 제거 후 복원
       tbody.innerHTML = '';
       const CH_COLORS = ['#FEE500','#E1306C','#111111','#03C75A','#1a6b4a','#FF0000'];
-      const CH_BORDERS= ['1px solid #ddd','none','none','none','none','none'];
       [...d.syncLog].reverse().forEach(r => {
         const checks = [r.kakao, r.insta, r.threads, r.blog, r.home, r.youtube];
         let dots = '<div style="display:flex;gap:5px;align-items:center;">';
-        checks.forEach((v, i) => {
-          const color = v ? CH_COLORS[i] : 'var(--border)';
-          const border = v && i===0 ? 'border:1px solid #ddd;' : '';
-          dots += `<span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${color};${border}flex-shrink:0;"></span>`;
+        checks.forEach((v,i) => {
+          const b = (v&&i===0)?'border:1px solid #ddd;':'';
+          dots += `<span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${v?CH_COLORS[i]:'var(--border)'};${b}flex-shrink:0;"></span>`;
         });
         dots += '</div>';
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="font-family:var(--mono);font-size:12px;color:var(--text3);">${r.date}</td>
           <td><span style="background:var(--orange-light);color:var(--orange);font-size:11px;padding:2px 8px;border-radius:10px;">${r.type}</span></td>
-          <td>${r.title}</td>
-          <td>${dots}</td>
+          <td>${r.title}</td><td>${dots}</td>
           <td><input type="text" value="${r.manager||''}" placeholder="담당자" style="width:68px;"></td>
           <td><button class="btn btn-sm" onclick="delLog(this)" style="color:var(--red);border-color:#ecc;">삭제</button></td>`;
         tbody.appendChild(tr);
       });
     }
 
-    // ── 메타 복원 (플랫폼명) ──
     if (d.meta && d.meta.platformName) {
       const el = document.getElementById('platform-name');
       if (el) { el.value = d.meta.platformName; syncPlatformLabel(); }
@@ -934,151 +693,444 @@ async function loadFromSheet() {
   }
 }
 
-/* ── 시트로 데이터 저장 (push) ── */
 async function saveToSheet() {
   const url = getScriptUrl();
-  if (!url) {
-    // 로컬 저장만
-    tick('로컬 저장');
-    alert('⚠️ Apps Script URL이 없어 로컬에만 저장됐습니다.\n④ URL 관리 탭에서 웹앱 URL을 입력해주세요.');
-    return;
-  }
+  if (!url) { tick('로컬 저장'); alert('⚠️ 연동 URL 없음'); return; }
   setGsStatus('loading');
   try {
-    // ── 예약 데이터 수집 ──
     const bookingRows = [];
     document.querySelectorAll('#booking-body tr').forEach(tr => {
       const tds = tr.querySelectorAll('td');
       bookingRows.push({
-        month  : tds[0]?.textContent.trim(),
-        total  : tds[1]?.querySelector('input')?.value || 0,
-        plat   : tr.querySelector('.inp-p')?.value || 0,
-        direct : tr.querySelector('.inp-d')?.value || 0,
-        rate   : tds[4]?.textContent.replace('%','').trim() || 0,
-        vs     : tds[5]?.textContent.trim() || '',
-        diff   : tds[6]?.textContent.trim() || '',
-        memo   : tds[7]?.querySelector('input')?.value || '',
+        month:tds[0]?.textContent.trim(), total:tds[1]?.querySelector('input')?.value||0,
+        plat:tr.querySelector('.inp-p')?.value||0, direct:tr.querySelector('.inp-d')?.value||0,
+        rate:tds[4]?.textContent.replace('%','').trim()||0, vs:tds[5]?.textContent.trim()||'',
+        diff:tds[6]?.textContent.trim()||'', memo:tds[7]?.querySelector('input')?.value||'',
       });
     });
 
-    // ── OSMU 데이터 수집 ──
     const osmuRows = [];
     document.querySelectorAll('#osmu-body tr').forEach(tr => {
       const sels = tr.querySelectorAll('.ss');
-      const link = tr.querySelector('.wl');
+      const linkBtn = tr.querySelector('.link-btn');
+      const titleEl = tr.querySelector('td:nth-child(2) span');
       osmuRows.push({
-        month   : tr.querySelector('.sel-month')?.value || '',
-        title   : link?.getAttribute('data-title') || link?.textContent.replace(' ✎','').trim() || '',
-        titleUrl: link?.getAttribute('data-url') || '',
-        ytMain  : tr.querySelectorAll('input[type=number]')[0]?.value || 0,
-        ytShort : tr.querySelectorAll('input[type=number]')[1]?.value || 0,
-        insta   : sels[0]?.value || '',
-        threads : sels[1]?.value || '',
-        blog    : sels[2]?.value || '',
-        url     : tr.querySelector('input[type=url]')?.value || '',
+        month:tr.querySelector('.sel-month')?.value||'',
+        title:titleEl?.textContent.trim()||'',
+        titleUrl:linkBtn?.getAttribute('data-url')||'',
+        ytMain:tr.querySelectorAll('input[type=number]')[0]?.value||0,
+        ytShort:tr.querySelectorAll('input[type=number]')[1]?.value||0,
+        insta:sels[0]?.value||'', threads:sels[1]?.value||'', blog:sels[2]?.value||'',
       });
     });
 
     const blogData = {
-      h1Done  : parseInt(document.getElementById('h1-done')?.value)  || 0,
-      h1Ready : parseInt(document.getElementById('h1-ready')?.value) || 0,
-      h2Done  : parseInt(document.getElementById('h2-done')?.value)  || 0,
-      h2Ready : parseInt(document.getElementById('h2-ready')?.value) || 0,
+      h1Done:parseInt(document.getElementById('h1-done')?.value)||0,
+      h1Ready:parseInt(document.getElementById('h1-ready')?.value)||0,
+      h2Done:parseInt(document.getElementById('h2-done')?.value)||0,
+      h2Ready:parseInt(document.getElementById('h2-ready')?.value)||0,
     };
 
-    // ── 공지 동기화 기록 수집 ──
     const syncRows = [];
     document.querySelectorAll('#sync-log tr').forEach(tr => {
       const tds = tr.querySelectorAll('td');
       if (!tds.length) return;
       const dots = tr.querySelectorAll('td:nth-child(4) span');
-      const isChecked = (i) => dots[i] && dots[i].style.background !== 'var(--border)' && !dots[i].style.background.includes('rgb(226');
+      const isChecked = (i) => dots[i] && !dots[i].style.background.includes('border');
       syncRows.push({
-        date    : tds[0]?.textContent.trim(),
-        type    : tds[1]?.textContent.trim(),
-        title   : tds[2]?.textContent.trim(),
-        kakao   : isChecked(0), insta: isChecked(1), threads: isChecked(2),
-        blog    : isChecked(3), home : isChecked(4), youtube: isChecked(5),
-        manager : tds[4]?.querySelector('input')?.value || '',
+        date:tds[0]?.textContent.trim(), type:tds[1]?.textContent.trim(), title:tds[2]?.textContent.trim(),
+        kakao:!!dots[0]&&dots[0].style.background!=='var(--border)',
+        insta:!!dots[1]&&dots[1].style.background!=='var(--border)',
+        threads:!!dots[2]&&dots[2].style.background!=='var(--border)',
+        blog:!!dots[3]&&dots[3].style.background!=='var(--border)',
+        home:!!dots[4]&&dots[4].style.background!=='var(--border)',
+        youtube:!!dots[5]&&dots[5].style.background!=='var(--border)',
+        manager:tds[4]?.querySelector('input')?.value||'',
       });
     });
 
-    // ── 메타 ──
-    const meta = {
-      platformName: document.getElementById('platform-name')?.value || '',
-    };
+    const meta = { platformName: document.getElementById('platform-name')?.value||'' };
+    const payload = { booking:bookingRows, osmu:{rows:osmuRows, blog:blogData}, syncLog:syncRows, meta };
 
-    const payload = { booking: bookingRows, osmu: { rows: osmuRows, blog: blogData }, syncLog: syncRows, meta };
-
-    const res  = await fetch(url, {
-      method   : 'POST',
-      redirect : 'follow',
-      // Content-Type을 text/plain으로 — application/json은 preflight 유발
-      headers  : { 'Content-Type': 'text/plain;charset=utf-8' },
-      body     : JSON.stringify(payload),
-    });
+    const res  = await fetch(url, { method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload) });
     const text = await res.text();
     let json;
-    try { json = JSON.parse(text); } catch(e) { throw new Error('응답 파싱 실패: ' + text.slice(0,100)); }
+    try { json = JSON.parse(text); } catch(e) { throw new Error('응답 파싱 실패'); }
     if (!json.ok) throw new Error(json.error);
-
-    setGsStatus('ok');
-    tick('저장됨');
+    setGsStatus('ok'); tick('저장됨');
   } catch(err) {
     console.warn('GS save error:', err);
-    setGsStatus('error');
-    tick('저장 오류');
-    alert('❌ 구글시트 저장 실패: ' + err.message + '\n\n로컬에는 저장됐습니다.');
+    setGsStatus('error'); tick('저장 오류');
+    alert('❌ 저장 실패: ' + err.message);
   }
 }
 
-/* ── 연결 테스트 ── */
 async function testGsConnection() {
-  const url = document.getElementById('url-apps-script')?.value.trim();
   const result = document.getElementById('gs-test-result');
-  if (!url) { alert('웹앱 URL을 먼저 입력해주세요.'); return; }
-  result.style.display = 'block';
-  result.style.color = 'var(--text2)';
-  result.textContent = '⏳ 연결 테스트 중…';
+  result.style.display = 'block'; result.style.color = 'var(--text2)'; result.textContent = '⏳ 테스트 중…';
   try {
-    const res  = await fetch(url + '?action=load', { method:'GET', redirect:'follow' });
-    const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); } catch(e) { throw new Error('응답 형식 오류 — Apps Script 배포 설정을 확인해주세요'); }
-    if (json.ok) {
-      result.style.color = 'var(--green)';
-      result.textContent = '✅ 연결 성공! URL 저장 후 새로고침하면 데이터가 불러와집니다.';
-      localStorage.setItem('url-apps-script', url);
-    } else {
-      throw new Error(json.error);
-    }
-  } catch(err) {
-    result.style.color = 'var(--red)';
-    result.textContent = '❌ 연결 실패: ' + err.message
-      + ' — 배포 설정에서 액세스 권한이 "모든 사용자"인지 확인해주세요.';
+    const res  = await fetch(getScriptUrl() + '?action=load', { method:'GET', redirect:'follow' });
+    const json = JSON.parse(await res.text());
+    if (json.ok) { result.style.color='var(--green)'; result.textContent='✅ 연결 성공'; }
+    else throw new Error(json.error);
+  } catch(err) { result.style.color='var(--red)'; result.textContent='❌ 실패: '+err.message; }
+}
+
+function showGsSetup() { go('urls', document.querySelectorAll('.tab')[4]); }
+
+/* ── URL 저장/불러오기 ── */
+const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree','url-threads','url-kakao','url-youtube','url-gs-view','url-gs-edit','faq-url','rule-url','tmpl-url'];
+function saveUrls() { URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); }); tick('URL 저장'); }
+function saveFaq()  { ['faq-url','rule-url','tmpl-url'].forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); }); tick('링크 저장'); }
+function loadUrls() { URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; }); }
+function openU(id)  { const u=document.getElementById(id)?.value.trim(); if(u) window.open(u,'_blank'); else alert('URL을 먼저 입력해주세요.'); }
+function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else go('urls',document.querySelectorAll('.tab')[4]); }
+function flowGo(id,e) {
+  e.preventDefault();
+  const u = localStorage.getItem(id) || document.getElementById(id)?.value.trim();
+  if(u) window.open(u,'_blank'); else { alert('URL 관리 탭에서 URL을 먼저 저장해주세요.'); go('urls',document.querySelectorAll('.tab')[4]); }
+}
+
+/* ── 탭 전환 ── */
+function go(id, btn) {
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('sheet-' + id).classList.add('on');
+  btn.classList.add('on');
+  if (id === 'booking') { renderBarChart(); }
+}
+
+/* ── 플랫폼명 동기화 ── */
+function syncPlatformLabel() {
+  const n = document.getElementById('platform-name').value || '상위 플랫폼';
+  ['bm-plat-label','th-plat','chart-plat-label'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = id==='bm-plat-label' ? n+' 예약' : n;
+  });
+}
+
+/* ── 예약 전환율 ── */
+function calcBooking(inp) {
+  const row = inp.closest('tr');
+  const total  = parseInt(row.querySelectorAll('input[type=number]')[0].value)||0;
+  const plat   = parseInt(row.querySelector('.inp-p').value)||0;
+  const direct = parseInt(row.querySelector('.inp-d').value)||0;
+  const rate = total>0 ? direct/total*100 : 0;
+  const gap  = direct - plat;
+  row.querySelector('.td-rate').innerHTML = rate.toFixed(1)+'%<div class="prog"><div class="prog-fill" style="width:'+Math.min(rate,100).toFixed(1)+'%;"></div></div>';
+  const vs = row.querySelector('.td-vs');
+  vs.textContent = (gap>=0?'+':'')+gap+'건';
+  vs.className = 'td-vs '+(gap>=0?'g':'o');
+  vs.style.cssText = 'font-family:var(--mono);font-size:12px;';
+  recalcDiffs(); updateBookingMetrics(); renderBarChart();
+}
+function recalcDiffs() {
+  const rows = document.querySelectorAll('#booking-body tr');
+  let prev = null;
+  rows.forEach(row => {
+    const t = parseInt(row.querySelectorAll('input[type=number]')[0]?.value)||0;
+    const d = parseInt(row.querySelector('.inp-d')?.value)||0;
+    const rate = t>0 ? d/t*100 : 0;
+    const dc = row.querySelector('.td-diff');
+    if (!dc) return;
+    if (prev===null) { dc.textContent='기준'; dc.className='td-diff gr'; dc.style.cssText='font-size:12px;font-family:var(--mono);'; }
+    else { const diff=rate-prev; dc.textContent=(diff>=0?'↑ ':'↓ ')+Math.abs(diff).toFixed(1)+'%p'; dc.className='td-diff '+(diff>=0?'up':'dn'); dc.style.cssText='font-size:12px;font-family:var(--mono);'; }
+    prev = rate;
+  });
+}
+function updateBookingMetrics() {
+  const rows = document.querySelectorAll('#booking-body tr');
+  if (!rows.length) return;
+  const last = rows[rows.length-1];
+  const total  = parseInt(last.querySelectorAll('input[type=number]')[0]?.value)||0;
+  const plat   = parseInt(last.querySelector('.inp-p')?.value)||0;
+  const direct = parseInt(last.querySelector('.inp-d')?.value)||0;
+  const gap = direct-plat;
+  document.getElementById('bm-total').textContent  = total;
+  document.getElementById('bm-plat').textContent   = plat;
+  document.getElementById('bm-direct').textContent = direct;
+  document.getElementById('bm-plat-rate').textContent   = (total>0?(plat/total*100).toFixed(1):0)+'%';
+  document.getElementById('bm-direct-rate').textContent = (total>0?(direct/total*100).toFixed(1):0)+'%';
+  document.getElementById('bm-gap').textContent = (gap>=0?'+':'')+gap+'건';
+  document.getElementById('bm-gap').className = 'met-val '+(gap>=0?'g':'o');
+  if (rows.length>=2) {
+    const prev = rows[rows.length-2];
+    const pt=parseInt(prev.querySelectorAll('input[type=number]')[0]?.value)||0;
+    const pd=parseInt(prev.querySelector('.inp-d')?.value)||0;
+    const prevRate=pt>0?pd/pt*100:0, currRate=total>0?direct/total*100:0;
+    const diff=currRate-prevRate;
+    const el=document.getElementById('bm-diff');
+    el.textContent=(diff>=0?'↑ ':'↓ ')+Math.abs(diff).toFixed(1)+'%p';
+    el.className=diff>=0?'up':'dn';
   }
 }
-
-/* ── 연동설정 팝업 ── */
-function showGsSetup() {
-  go('urls', document.querySelectorAll('.tab')[3]);
-  setTimeout(() => {
-    const el = document.getElementById('url-apps-script');
-    if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.focus(); }
-  }, 100);
+function addBookingRow() {
+  const rows = document.querySelectorAll('#booking-body tr');
+  const last = rows[rows.length-1]?.querySelector('td')?.textContent||'2025.04';
+  const [y,m] = last.split('.').map(Number);
+  const nm=m===12?1:m+1, ny=m===12?y+1:y;
+  const label = ny+'.'+String(nm).padStart(2,'0');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td style="font-family:var(--mono);font-size:12px;">${label}</td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="0" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">0.0%<div class="prog"><div class="prog-fill" style="width:0%;"></div></div></td><td class="td-vs gr" style="font-family:var(--mono);font-size:12px;">0건</td><td class="td-diff gr" style="font-size:12px;font-family:var(--mono);">—</td><td><input type="text" placeholder="메모" style="width:88px;"></td>`;
+  document.getElementById('booking-body').appendChild(tr);
+  recalcDiffs(); renderBarChart();
+}
+function renderBarChart() {
+  const rows = document.querySelectorAll('#booking-body tr');
+  const c = document.getElementById('bar-chart');
+  if (!c) return;
+  c.innerHTML = '';
+  let maxT = 0;
+  const data = [];
+  rows.forEach(row => {
+    const label = row.querySelector('td').textContent.slice(5);
+    const t=parseInt(row.querySelectorAll('input[type=number]')[0]?.value)||0;
+    const p=parseInt(row.querySelector('.inp-p')?.value)||0;
+    const d=parseInt(row.querySelector('.inp-d')?.value)||0;
+    if(t>maxT) maxT=t;
+    data.push({label,t,p,d});
+  });
+  data.forEach(({label,t,p,d}) => {
+    const H=110, pct=maxT>0?t/maxT:0;
+    const g=document.createElement('div'); g.className='bar-group';
+    g.innerHTML=`<div class="bar-wrap"><div class="bar" style="height:${Math.round(pct*H)}px;background:var(--border);"></div><div class="bar" style="height:${Math.round(pct*(t>0?p/t:0)*H)}px;background:var(--orange);"></div><div class="bar" style="height:${Math.round(pct*(t>0?d/t:0)*H)}px;background:var(--green);"></div></div><div class="bar-label">${label}</div>`;
+    c.appendChild(g);
+  });
 }
 
-/* ── 저장 / 시간 ── */
+/* ── OSMU ── */
+function colorSel(sel) {
+  const map = {'완료':'s-done','편집중':'s-wip','기획':'s-plan','미예정':'s-none','미승인':'s-none','승인':'s-done'};
+  sel.className = 'ss ' + (map[sel.value]||'s-plan');
+}
+function calcOsmu() {
+  const rows = document.querySelectorAll('#osmu-body tr');
+  let total=0, done=0, wip=0, plan=0, blogDone=0;
+  rows.forEach(row => {
+    const sels   = Array.from(row.querySelectorAll('.ss'));
+    const allVals = sels.map(s=>s.value);
+    const active  = allVals.filter(v=>v!=='미예정');
+    // 블로그 select는 3번째(index 2)
+    if (sels[2] && sels[2].value === '완료') blogDone++;
+    if (active.length===0) return;
+    total++;
+    if (active.every(v=>v==='완료')) done++;
+    else if (active.some(v=>v==='기획') && !active.some(v=>v==='완료'||v==='편집중')) plan++;
+    else wip++;
+  });
+  document.getElementById('m-total').textContent = total;
+  document.getElementById('m-done').textContent  = done;
+  document.getElementById('m-wip').textContent   = wip;
+  document.getElementById('m-plan').textContent  = plan;
+  document.getElementById('cnt-osmu').textContent = total;
+  // 블로그 누적 집계 반영
+  updateBlogTotal(blogDone);
+}
+function addOsmuRow() {
+  const opts  = '<option>기획</option><option>완료</option><option>편집중</option><option>미예정</option>';
+  const mOpts = ['01','02','03','04','05','06','07','08','09','10','11','12'].map(m=>`<option>${m}월</option>`).join('');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select class="sel-month">${mOpts}</select></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <a href="#" class="doc-link" data-url="" onclick="openDocLink(this,event)" style="flex:1;font-size:13px;color:var(--info);text-decoration:none;">새 콘텐츠 제목</a>
+        <button class="link-btn" data-url="" onclick="openPubLink(this)" title="유튜브 게시 링크" style="font-size:14px;padding:2px 6px;border-radius:5px;">▶</button>
+      </div>
+    </td>
+    <td><input type="number" value="0" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
+    <td><input type="number" value="0" min="0" style="width:41px;text-align:center;" oninput="calcOsmu()"></td>
+    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
+    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
+    <td><select class="ss s-plan" onchange="colorSel(this);calcOsmu()">${opts}</select></td>
+    <td style="white-space:nowrap;">
+      <button class="btn btn-sm" onclick="editOsmuRow(this)" style="color:var(--text2);">수정</button>
+      <button class="btn btn-sm" onclick="delRowConfirm(this)" style="color:var(--red);border-color:#ecc;margin-left:3px;">✕</button>
+    </td>`;
+  document.getElementById('osmu-body').appendChild(tr);
+  calcOsmu();
+}
+function delRow(btn) { btn.closest('tr').remove(); calcOsmu(); }
+function delRowConfirm(btn) {
+  const title = btn.closest('tr').querySelector('.doc-link')?.textContent.trim() || '이 항목';
+  if (confirm(`"${title}"\n\n삭제하시겠습니까? 복구가 불가합니다.`)) { btn.closest('tr').remove(); calcOsmu(); }
+}
+
+/* ── 문서/게시 링크 함수 ── */
+function openDocLink(el, e) {
+  e.preventDefault();
+  const u = el.getAttribute('data-url');
+  if (u) window.open(u, '_blank');
+  else alert('수정 버튼을 눌러 기획안 문서 링크를 먼저 등록해주세요.');
+}
+function openPubLink(btn) {
+  const u = btn.getAttribute('data-url');
+  if (u) window.open(u, '_blank');
+  else {
+    const newUrl = prompt('게시 링크 (유튜브/인스타 등):', '');
+    if (newUrl && newUrl.trim()) { btn.setAttribute('data-url', newUrl.trim()); btn.classList.add('has-url'); }
+  }
+}
+function editOsmuRow(btn) {
+  const tr      = btn.closest('tr');
+  const docLink = tr.querySelector('.doc-link');
+  const pubBtn  = tr.querySelector('.link-btn');
+  const curTitle  = docLink.textContent.trim();
+  const curDocUrl = docLink.getAttribute('data-url') || '';
+  const curPubUrl = pubBtn ? pubBtn.getAttribute('data-url') || '' : '';
+  const newTitle = prompt('콘텐츠 제목:', curTitle.includes('새 콘텐츠') ? '' : curTitle);
+  if (newTitle === null) return;
+  const newDocUrl = prompt('기획안 문서 링크 (구글 Docs):', curDocUrl);
+  if (newDocUrl === null) return;
+  const newPubUrl = prompt('게시 링크 (유튜브/인스타 등):', curPubUrl);
+  if (newPubUrl === null) return;
+  if (newTitle.trim()) docLink.textContent = newTitle.trim();
+  if (newDocUrl.trim()) docLink.setAttribute('data-url', newDocUrl.trim());
+  if (newPubUrl.trim() && pubBtn) { pubBtn.setAttribute('data-url', newPubUrl.trim()); pubBtn.classList.add('has-url'); }
+}
+
+/* ── 출장 플랜 ── */
+function addTripRow() {
+  const rows = document.querySelectorAll('#trip-body tr').length;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="${rows+1}회차" style="width:54px;text-align:center;"></td>
+    <td><input type="date" style="width:130px;font-family:var(--mono);font-size:12px;"></td>
+    <td><input type="date" style="width:130px;font-family:var(--mono);font-size:12px;"></td>
+    <td><input type="number" value="0" min="0" style="width:54px;text-align:center;"></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <a href="#" class="doc-link" data-url="" onclick="openDocLink(this,event)" style="flex:1;font-size:12px;color:var(--info);text-decoration:none;">문서 제목 미입력</a>
+        <button class="btn btn-sm" onclick="editTripDoc(this)" style="color:var(--text2);">수정</button>
+      </div>
+    </td>
+    <td><select class="ss s-none" onchange="colorSel(this)"><option>미승인</option><option>승인</option><option>완료</option></select></td>
+    <td><button class="btn btn-sm" onclick="if(confirm('이 일정을 삭제하시겠습니까?')) this.closest('tr').remove()" style="color:var(--red);border-color:#ecc;">✕</button></td>`;
+  document.getElementById('trip-body').appendChild(tr);
+}
+function editTripDoc(btn) {
+  const td      = btn.closest('td');
+  const docLink = td.querySelector('.doc-link');
+  const curTitle  = docLink.textContent.trim();
+  const curDocUrl = docLink.getAttribute('data-url') || '';
+  const newTitle = prompt('문서 제목:', curTitle.includes('미입력') ? '' : curTitle);
+  if (newTitle === null) return;
+  const newDocUrl = prompt('구글 Docs 링크:', curDocUrl);
+  if (newDocUrl === null) return;
+  if (newTitle.trim()) docLink.textContent = newTitle.trim();
+  if (newDocUrl.trim()) docLink.setAttribute('data-url', newDocUrl.trim());
+}
+
+/* ── 블로그 카운터 ── */
+function adjInp() {
+  const h1done  = Math.max(0, parseInt(document.getElementById('h1-done').value)||0);
+  const h1ready = Math.max(0, parseInt(document.getElementById('h1-ready').value)||0);
+  const h2done  = Math.max(0, parseInt(document.getElementById('h2-done').value)||0);
+  const h2ready = Math.max(0, parseInt(document.getElementById('h2-ready').value)||0);
+  const h1=h1done+h1ready, h2=h2done+h2ready;
+  document.getElementById('h1-total').textContent = h1;
+  document.getElementById('h2-total').textContent = h2;
+  const mx=Math.max(h1,h2,1);
+  document.getElementById('h1-bar-done').style.width  = Math.round(h1done/mx*100)+'%';
+  document.getElementById('h1-bar-ready').style.width = Math.round(h1ready/mx*100)+'%';
+  document.getElementById('h2-bar-done').style.width  = Math.round(h2done/mx*100)+'%';
+  document.getElementById('h2-bar-ready').style.width = Math.round(h2ready/mx*100)+'%';
+  // 콘텐츠 현황의 블로그 완료 수도 함께 반영
+  const osmuBlogDone = Array.from(document.querySelectorAll('#osmu-body tr')).filter(tr => {
+    const sels = tr.querySelectorAll('.ss');
+    return sels[2] && sels[2].value === '완료';
+  }).length;
+  updateBlogTotal(osmuBlogDone, h1done+h2done, h1ready+h2ready);
+}
+function updateBlogTotal(osmuBlogDone, manualDone, manualReady) {
+  // manualDone/manualReady 없으면 현재 입력값에서 읽음
+  if (manualDone === undefined) {
+    manualDone  = (parseInt(document.getElementById('h1-done').value)||0) + (parseInt(document.getElementById('h2-done').value)||0);
+    manualReady = (parseInt(document.getElementById('h1-ready').value)||0) + (parseInt(document.getElementById('h2-ready').value)||0);
+  }
+  const totalDone  = manualDone + osmuBlogDone;
+  const totalReady = manualReady;
+  document.getElementById('blog-total-done').textContent  = totalDone;
+  document.getElementById('blog-total-ready').textContent = totalReady;
+  document.getElementById('blog-total-all').textContent   = totalDone + totalReady;
+}
+
+/* ── 공지 동기화 ── */
+function onChk(cb) {
+  cb.closest('.chk-item').classList.toggle('done', cb.checked);
+  const boxes   = document.querySelectorAll('#chk-list input[type=checkbox]:not(#c6)');
+  const checked = document.querySelectorAll('#chk-list input[type=checkbox]:not(#c6):checked').length;
+  document.getElementById('cnt-sync').textContent = checked+'/'+boxes.length;
+}
+const CH_INFO = [
+  {id:'c1',color:'#FEE500',border:'1px solid #ddd',label:'카카오'},
+  {id:'c2',color:'#E1306C',border:'none',label:'인스타'},
+  {id:'c3',color:'#111111',border:'none',label:'쓰레드'},
+  {id:'c4',color:'#03C75A',border:'none',label:'블로그'},
+  {id:'c5',color:'#1a6b4a',border:'none',label:'홈페이지'},
+  {id:'c6',color:'#FF0000',border:'none',label:'유튜브'},
+];
+function doneSync() {
+  const title = document.getElementById('ntitle').value.trim();
+  if (!title) { alert('공지 제목을 입력해주세요.'); return; }
+  const type = document.getElementById('ntype').value;
+  const now  = new Date();
+  const date = (now.getMonth()+1)+'.'+String(now.getDate()).padStart(2,'0');
+  let dots = '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">';
+  CH_INFO.forEach(ch => {
+    const cb=document.getElementById(ch.id);
+    if (cb?.checked) dots += `<span title="${ch.label}" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${ch.color};border:${ch.border};flex-shrink:0;"></span>`;
+    else dots += `<span title="${ch.label}" style="display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--border);flex-shrink:0;"></span>`;
+  });
+  dots += '</div>';
+  const tbody = document.getElementById('sync-log');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-family:var(--mono);font-size:12px;color:var(--text3);">${date}</td>
+    <td><span style="background:var(--orange-light);color:var(--orange);font-size:11px;padding:2px 8px;border-radius:10px;">${type}</span></td>
+    <td>${title}</td><td>${dots}</td>
+    <td><input type="text" placeholder="담당자" style="width:68px;"></td>
+    <td><button class="btn btn-sm" onclick="delLog(this)" style="color:var(--red);border-color:#ecc;">삭제</button></td>`;
+  tbody.insertBefore(tr, tbody.firstChild);
+  resetChk(); document.getElementById('ntitle').value=''; tick('기록 저장');
+}
+function resetChk() {
+  document.querySelectorAll('#chk-list input[type=checkbox]').forEach(cb => { cb.checked=false; cb.closest('.chk-item').classList.remove('done'); });
+  document.getElementById('cnt-sync').textContent = '0/5';
+}
+function delLog(btn) {
+  const row = btn.closest('tr');
+  const title = row.querySelectorAll('td')[2]?.textContent||'이 기록';
+  if (confirm(`⚠️ "${title}" 기록을 삭제하시겠습니까?\n삭제 후 복구가 불가합니다.`)) row.remove();
+}
+
+/* ── 시즈널 배너 ── */
+const SEASONAL = {
+  1:{items:['1/1 신정','설 연휴'],high:false}, 2:{items:['설 연휴','겨울 시즌'],high:false},
+  3:{items:['3/1 삼일절','봄 시즌 개막','유채꽃 시즌'],high:true}, 4:{items:['벚꽃 시즌','봄 성수기 예약 급증'],high:true},
+  5:{items:['5/5 어린이날','5/8 어버이날','가족 여행 성수기'],high:true}, 6:{items:['6/6 현충일','여름 준비 시즌'],high:false},
+  7:{items:['여름 최대 성수기','해수욕장 드라이브 코스'],high:true}, 8:{items:['8/15 광복절','여름 극성수기'],high:true},
+  9:{items:['추석 연휴','가을 시즌 개막'],high:true}, 10:{items:['개천절','한글날','단풍 시즌'],high:true},
+  11:{items:['비수기 시작','가성비 여행 콘텐츠 집중'],high:false}, 12:{items:['크리스마스','연말 연휴'],high:false},
+};
+function renderBanner() {
+  const banner = document.getElementById('notice-banner');
+  if (!banner) return;
+  const m = new Date().getMonth()+1, s = SEASONAL[m];
+  if (!s) { banner.innerHTML=''; return; }
+  const cls=s.high?'notice-high':'notice-mid', icon=s.high?'🔴':'🟡';
+  banner.innerHTML=`<div class="notice ${cls}"><div class="notice-icon">${icon}</div><div><div class="notice-title"><span class="notice-dot"></span>${new Date().getFullYear()}년 ${m}월 시즈널 이슈</div><div class="notice-desc">${s.items.join(' &nbsp;·&nbsp; ')}</div></div></div>`;
+}
+
+/* ── 저장/시간 ── */
 function saveAll() {
-  // 로컬 URL 저장
-  URL_IDS.forEach(k => { const el = document.getElementById(k); if (el) localStorage.setItem(k, el.value); });
-  // 구글시트 push
+  URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); });
   saveToSheet();
 }
 function tick(msg) {
-  const now = new Date();
-  const t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('sync-time').textContent = (msg||'저장') + ' ' + (now.getMonth()+1) + '/' + now.getDate() + ' ' + t;
+  const now=new Date();
+  const t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('sync-time').textContent=(msg||'저장')+' '+(now.getMonth()+1)+'/'+now.getDate()+' '+t;
 }
 
 /* ── 초기화 ── */
@@ -1090,9 +1142,9 @@ window.onload = function() {
   recalcDiffs();
   renderBarChart();
   renderBanner();
-  document.getElementById('blog-year').textContent = new Date().getFullYear() + '년';
+  document.getElementById('blog-year').textContent = new Date().getFullYear()+'년';
+  adjInp();
 
-  // input[type=number] 이벤트 위임
   document.addEventListener('input', function(e) {
     if (e.target.type !== 'number') return;
     const row = e.target.closest('tr');
@@ -1108,7 +1160,6 @@ window.onload = function() {
     if (row.closest('#osmu-body'))   calcOsmu();
   });
 
-  // 구글시트에서 데이터 불러오기 (URL 없으면 로컬 모드로 조용히 전환)
   loadFromSheet();
 };
 </script>
