@@ -795,8 +795,10 @@ function delLog(btn) {
    구글시트 양방향 연동
 ══════════════════════════════════════════════ */
 
+// Apps Script URL 고정 — 모든 기기/사용자 공통 적용
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwclQ2utVs05nNJ9MnS0c1PgPXvmVNWZsO_rOf6_toBUq5hP6HjViBdwbHnHrFFFWiM/exec';
 function getScriptUrl() {
-  return localStorage.getItem('url-apps-script') || '';
+  return APPS_SCRIPT_URL;
 }
 
 function setGsStatus(state) {
