@@ -595,9 +595,11 @@ async function saveToSheet() {
       memo    : document.getElementById('memo-'+ch)?.value || '',
     }));
 
-    // KPI 수집
-    const y = document.getElementById('kpi-year')?.value || new Date().getFullYear();
-    const m = document.getElementById('kpi-month')?.value || (new Date().getMonth()+1);
+    // KPI 수집 — DOM이 숨겨져 있을 수 있으므로 null 체크 강화
+    const kpiYearEl = document.getElementById('kpi-year');
+    const kpiMonthEl = document.getElementById('kpi-month');
+    const y = (kpiYearEl && kpiYearEl.value) ? kpiYearEl.value : new Date().getFullYear();
+    const m = (kpiMonthEl && kpiMonthEl.value) ? kpiMonthEl.value : (new Date().getMonth()+1);
     const wfKpi = ['blog','insta','yt','kakao','home'].map(ch => ({
       year: y, month: m, ch,
       v1: document.getElementById('k-'+ch+'-1')?.value || '',
