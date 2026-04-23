@@ -496,7 +496,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
     <div class="url-row"><div class="url-label">편집용</div><input type="url" id="url-gs-edit" placeholder="구글시트 편집 링크" oninput="saveUrls()"><button class="url-open" onclick="openU('url-gs-edit')">열기 ↗</button></div>
     <div class="url-row" style="margin-top:8px;padding-top:12px;border-top:1px solid var(--border);">
       <div class="url-label" style="color:var(--blue);font-size:11px;">웹앱 URL</div>
-      <input type="url" id="url-apps-script" placeholder="Apps Script 웹앱 URL" oninput="saveUrls();updateDash()" style="font-size:11px;font-family:var(--mono);">
+      <input type="url" id="url-apps-script" placeholder="Apps Script 웹앱 URL" oninput="saveUrls()" style="font-size:11px;font-family:var(--mono);">
       <button class="url-open" onclick="openU('url-apps-script')">테스트 ↗</button>
     </div>
     <div style="font-size:11px;color:var(--text3);margin-top:6px;">※ 웹앱 URL 변경 시 저장하면 즉시 연동에 반영됩니다</div>
@@ -506,8 +506,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 </div>
 
 <script>
-const DASH_DEFAULT = 'https://script.google.com/macros/s/AKfycbxx8-Jg4T-REAH-wQrLvAWxQ96hnApPaqaAb3HzqrbZbC9abMmuo4tt9ljCqmIlvgMC/exec';
-function getDASH(){ return (window._DASH_OVERRIDE && window._DASH_OVERRIDE.length>10) ? window._DASH_OVERRIDE : DASH_DEFAULT; }
+const DASH = 'https://script.google.com/macros/s/AKfycbxx8-Jg4T-REAH-wQrLvAWxQ96hnApPaqaAb3HzqrbZbC9abMmuo4tt9ljCqmIlvgMC/exec';
 const P = 'wf3_';
 
 /* ══════════════════════════════════════════
@@ -522,7 +521,7 @@ function gsStatus(state) {
 async function loadFromSheet() {
   try {
     gsStatus('loading');
-    const res  = await fetch(getDASH() + '?action=loadWf', { method:'GET', redirect:'follow' });
+    const res  = await fetch(DASH + '?action=loadWf', { method:'GET', redirect:'follow' });
     const json = JSON.parse(await res.text());
     if (!json.ok) throw new Error(json.error);
     const d = json.data;
@@ -650,7 +649,7 @@ async function saveToSheet() {
       payload.wfLog = { date: today, memos };
     }
 
-    const res  = await fetch(getDASH(), {
+    const res  = await fetch(DASH, {
       method: 'POST', redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload),
@@ -676,7 +675,7 @@ function applyQuarter(r) {
 
 async function loadDash() {
   try {
-    const r = await fetch(getDASH()+'?action=load',{method:'GET',redirect:'follow'});
+    const r = await fetch(DASH+'?action=load',{method:'GET',redirect:'follow'});
     const j = JSON.parse(await r.text());
     if(!j.ok||!j.data.booking||!j.data.booking.length) return;
     const last = j.data.booking[j.data.booking.length-1];
@@ -992,19 +991,12 @@ function saveHighlights() {
 const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree',
                  'url-youtube','url-kakao','url-threads','url-gs-view','url-gs-edit','url-apps-script'];
 
-function updateDash() {
-  const v = document.getElementById('url-apps-script')?.value.trim();
-  if (v && v.startsWith('https://script.google.com')) {
-    window._DASH_OVERRIDE = v;
-  }
-}
 
 function saveUrls() {
   URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k, el.value); });
 }
 function loadUrls() {
   URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; });
-  updateDash(); // 저장된 웹앱 URL이 있으면 즉시 반영
 }
 function openU(id) {
   const u = document.getElementById(id)?.value.trim();
