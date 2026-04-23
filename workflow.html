@@ -342,12 +342,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
           <td><input class="knote" id="kn-insta" placeholder="특이사항…"></td>
         </tr>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#FF0000;"></div>유튜브</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">개설 후 입력 — 구독자 · 조회수 · 홈페이지유입</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-1" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">구독자</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-2" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">조회수</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-3" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">홈페이지 유입</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#FF0000;"></div>유튜브</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">구독자 · 조회수 · 홈페이지 유입</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">구독자</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">조회수</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">홈페이지 유입</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-yt">—</span></td>
-          <td><input class="knote" id="kn-yt" placeholder="개설 예정…"></td>
+          <td><input class="knote" id="kn-yt" placeholder="특이사항…"></td>
         </tr>
         <tr>
           <td><div class="kbadge"><div class="kdot" style="background:#FEE500;border:1px solid #aaa;"></div>카카오채널</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">친구수 · 예약페이지 접근수 (소식/AI채팅)</div></td>
@@ -607,6 +607,13 @@ async function saveToSheet() {
       good: ch === 'blog' ? (document.getElementById('kpi-good')?.value || '') : '',
       fix : ch === 'blog' ? (document.getElementById('kpi-fix')?.value  || '') : '',
     }));
+    // 하이라이트 + 월간종합 — 월별 덮어쓰기용
+    const wfKpiExtra = {
+      year: y, month: m,
+      highlights: highlights,
+      good: document.getElementById('kpi-good')?.value || '',
+      fix:  document.getElementById('kpi-fix')?.value  || '',
+    };
 
     // 분기 방향 수집
     const q = document.getElementById('q-sel')?.value || 'Q2';
