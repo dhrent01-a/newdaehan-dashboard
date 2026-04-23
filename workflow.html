@@ -141,6 +141,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 .btn-g{background:var(--green-bg);border-color:var(--green-bd);color:var(--green);font-weight:600;}
 .btn-g:hover{background:var(--green);color:#fff;}
 .btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+/* URL 관리 */
+.url-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.url-label{font-size:12px;font-weight:600;color:var(--text2);min-width:100px;flex-shrink:0;}
+.url-row input[type=url]{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);outline:none;}
+.url-row input[type=url]:focus{border-color:var(--green);}
+.url-row input[type=url]::placeholder{color:var(--text3);}
+.url-open{padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:var(--sans);transition:all .15s;}
+.url-open:hover{background:var(--surface3);color:var(--text);}
 /* 우선순위 체크 */
 .prio-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;cursor:pointer;transition:all .15s;user-select:none;}
 .prio-row:hover{border-color:var(--green);background:var(--green-bg);}
@@ -180,6 +188,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
   <button class="tab"    onclick="go('kpi',this)">② 월간 KPI 기록</button>
   <button class="tab"    onclick="go('sched',this)">③ 콘텐츠 스케줄</button>
   <button class="tab"    onclick="go('quarter',this)">④ 분기 방향</button>
+  <button class="tab"    onclick="go('urls',this)">⑤ URL 관리</button>
 </nav>
 
 <div class="main">
@@ -435,6 +444,32 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
   <div class="qgrid">
     <div class="qcard"><div class="qtitle">✅ 잘 된 것</div><textarea class="qta" id="q-good" rows="5" placeholder="성과가 나온 채널, 효과적이었던 전략…" onchange="saveQ()"></textarea></div>
     <div class="qcard"><div class="qtitle">🔄 개선할 것</div><textarea class="qta" id="q-fix" rows="5" placeholder="기대 이하였던 채널, 다음 분기 수정 방향…" onchange="saveQ()"></textarea></div>
+  </div>
+</div>
+
+<!-- ⑤ URL 관리 -->
+<div id="sheet-urls" class="sheet">
+  <div style="font-size:13px;color:var(--text3);margin-bottom:16px;padding:10px 14px;background:var(--blue-bg);border:1px solid rgba(26,111,196,.2);border-radius:8px;">
+    💡 여기서 저장한 URL은 채널 링크 버튼 및 콘텐츠 대시보드에서 공유됩니다.
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">자사 홈페이지</div>
+    <div class="url-row"><div class="url-label">홈페이지</div><input type="url" id="url-home" placeholder="https://newdaehan.com" oninput="saveUrls()"><button class="url-open" onclick="openU('url-home')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label">예약 페이지</div><input type="url" id="url-booking-p" placeholder="https://newdaehan.com/booking" oninput="saveUrls()"><button class="url-open" onclick="openU('url-booking-p')">열기 ↗</button></div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">채널 URL</div>
+    <div class="url-row"><div class="url-label" style="color:#03C75A;">네이버 블로그</div><input type="url" id="url-blog" placeholder="https://blog.naver.com/dh_jejurent" oninput="saveUrls()"><button class="url-open" onclick="openU('url-blog')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label" style="color:#E1306C;">인스타그램</div><input type="url" id="url-insta" placeholder="https://instagram.com/newdaehan" oninput="saveUrls()"><button class="url-open" onclick="openU('url-insta')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label" style="color:#E1306C;">링크인바이오</div><input type="url" id="url-linktree" placeholder="링크트리 URL" oninput="saveUrls()"><button class="url-open" onclick="openU('url-linktree')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label" style="color:#FF0000;">유튜브 채널</div><input type="url" id="url-youtube" placeholder="개설 후 입력" oninput="saveUrls()"><button class="url-open" onclick="openU('url-youtube')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label" style="color:#b07d00;">카카오채널</div><input type="url" id="url-kakao" placeholder="카카오채널 URL" oninput="saveUrls()"><button class="url-open" onclick="openU('url-kakao')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label">쓰레드</div><input type="url" id="url-threads" placeholder="https://threads.net/@newdaehan" oninput="saveUrls()"><button class="url-open" onclick="openU('url-threads')">열기 ↗</button></div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">구글시트 공유</div>
+    <div class="url-row"><div class="url-label">뷰어 (임원용)</div><input type="url" id="url-gs-view" placeholder="구글시트 뷰어 링크" oninput="saveUrls()"><button class="url-open" onclick="openU('url-gs-view')">열기 ↗</button></div>
+    <div class="url-row"><div class="url-label">편집용</div><input type="url" id="url-gs-edit" placeholder="구글시트 편집 링크" oninput="saveUrls()"><button class="url-open" onclick="openU('url-gs-edit')">열기 ↗</button></div>
   </div>
 </div>
 
@@ -861,10 +896,25 @@ function initSelects(){
   const qs=document.getElementById('q-sel');if(qs)qs.value='Q'+Math.ceil((new Date().getMonth()+1)/3);
 }
 
+
+// ── URL 관리 ──────────────────────────────────────────────────────
+const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree',
+                 'url-youtube','url-kakao','url-threads','url-gs-view','url-gs-edit'];
+function saveUrls() {
+  URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k, el.value); });
+}
+function loadUrls() {
+  URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; });
+}
+function openU(id) {
+  const u = document.getElementById(id)?.value.trim();
+  if(u) window.open(u,'_blank');
+  else alert('URL을 먼저 입력해주세요.');
+}
 window.onload=function(){
   setDate();initSelects();
   // 로컬 데이터 먼저 적용 (빠른 렌더링)
-  load();loadKpi();loadQ();loadPlans();
+  load();loadKpi();loadQ();loadPlans();loadUrls();
   document.querySelectorAll('.st-sel').forEach(cSt);
   // 구글시트에서 최신 데이터 불러오기
   loadDash();       // 예약 전환율
