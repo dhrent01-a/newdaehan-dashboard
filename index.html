@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>뉴대한렌트카 — 마케팅 통합 대시보드</title>
+<title>뉴대한렌트카 — 콘텐츠 대시보드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -170,7 +170,7 @@ input[type=number]{font-family:var(--mono);}
 <div class="hdr">
   <div class="hdr-left">
     <div class="logo">뉴대한렌트카</div>
-    <h1>마케팅 통합 대시보드</h1>
+    <h1>콘텐츠 대시보드</h1>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div class="gs-btn" id="gs-status-btn" onclick="openGS()"><div class="gs-dot" id="gs-dot"></div><span id="gs-label">구글시트</span></div>
@@ -184,7 +184,6 @@ input[type=number]{font-family:var(--mono);}
   <button class="tab"    onclick="go('trip',this)">② 출장 플랜</button>
   <button class="tab"    onclick="go('booking',this)">③ 월별 예약 전환율</button>
   <button class="tab"    onclick="go('sync',this)">④ 공지 동기화 <span class="tab-cnt" id="cnt-sync">0/5</span></button>
-  <button class="tab"    onclick="go('urls',this)">⑤ 채널별 URL 관리</button>
 </nav>
 
 <div class="main">
@@ -515,50 +514,6 @@ input[type=number]{font-family:var(--mono);}
 </div>
 
 <!-- ⑤ URL 관리 -->
-<div id="sheet-urls" class="sheet">
-  <div class="info-box">🔗 <span>URL 저장 후 OSMU 흐름도에서 채널 바로 이동 가능.</span></div>
-  <div class="card">
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>자사 홈페이지</div>
-      <div class="url-row"><div class="url-label">홈페이지</div><input type="url" id="url-home" style="flex:1;" placeholder="https://newdaehan.com"><button class="open-btn" onclick="openU('url-home')">열기 ↗</button></div>
-      <div class="url-row"><div class="url-label">예약 페이지</div><input type="url" id="url-booking-p" style="flex:1;" placeholder="https://newdaehan.com/booking"><button class="open-btn" onclick="openU('url-booking-p')">열기 ↗</button></div>
-    </div>
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:#03C75A;"></div>네이버 블로그</div>
-      <div class="url-row"><div class="url-label">블로그 홈</div><input type="url" id="url-blog" style="flex:1;" placeholder="https://blog.naver.com/newdaehan"><button class="open-btn" onclick="openU('url-blog')">열기 ↗</button></div>
-    </div>
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:#E1306C;"></div>인스타그램</div>
-      <div class="url-row"><div class="url-label">계정</div><input type="url" id="url-insta" style="flex:1;" placeholder="https://instagram.com/newdaehan"><button class="open-btn" onclick="openU('url-insta')">열기 ↗</button></div>
-      <div class="url-row"><div class="url-label">링크인바이오</div><input type="url" id="url-linktree" style="flex:1;" placeholder="링크트리 URL"><button class="open-btn" onclick="openU('url-linktree')">열기 ↗</button></div>
-    </div>
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:#111;"></div>쓰레드</div>
-      <div class="url-row"><div class="url-label">계정</div><input type="url" id="url-threads" style="flex:1;" placeholder="https://threads.net/@newdaehan"><button class="open-btn" onclick="openU('url-threads')">열기 ↗</button></div>
-    </div>
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:#FEE500;border:1px solid #ddd;"></div>카카오채널</div>
-      <div class="url-row"><div class="url-label">채널 홈</div><input type="url" id="url-kakao" style="flex:1;" placeholder="카카오채널 URL"><button class="open-btn" onclick="openU('url-kakao')">열기 ↗</button></div>
-    </div>
-    <div class="url-group">
-      <div class="url-group-title"><div class="ch-dot" style="width:8px;height:8px;border-radius:50%;background:#FF0000;"></div>유튜브 <span style="font-size:11px;color:var(--text3);font-weight:400;">(개설 예정)</span></div>
-      <div class="url-row"><div class="url-label">채널</div><input type="url" id="url-youtube" style="flex:1;" placeholder="개설 후 입력"><button class="open-btn" onclick="openU('url-youtube')">열기 ↗</button></div>
-    </div>
-    <div class="url-group" style="background:var(--info-light);border-radius:8px;padding:13px 15px;border:1px solid #c5d9ee;">
-      <div class="url-group-title" style="color:var(--info);">📊 구글시트 공유</div>
-      <div class="url-row"><div class="url-label">뷰어 (임원용)</div><input type="url" id="url-gs-view" style="flex:1;" placeholder="구글시트 뷰어 링크"><button class="open-btn" onclick="openU('url-gs-view')">열기 ↗</button></div>
-      <div class="url-row"><div class="url-label">편집용</div><input type="url" id="url-gs-edit" style="flex:1;" placeholder="구글시트 편집 링크"><button class="open-btn" onclick="openU('url-gs-edit')">열기 ↗</button></div>
-    </div>
-    <div class="url-group" style="background:#f0efe9;border-radius:8px;padding:13px 15px;border:1.5px solid var(--green);margin-top:4px;">
-      <div class="url-group-title" style="color:var(--green);">⚡ Apps Script 웹앱 연동 URL</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">연동 URL이 코드에 고정되어 있습니다. 변경 시 개발자에게 문의하세요.</div>
-      <div class="url-row"><div class="url-label" style="min-width:90px;">현재 URL</div><input type="text" value="설정됨 (코드 내장)" style="flex:1;" readonly><button class="open-btn" onclick="testGsConnection()">연결 테스트</button></div>
-      <div id="gs-test-result" style="font-size:12px;margin-top:6px;display:none;"></div>
-    </div>
-    <div class="btn-row"><button class="btn btn-g" onclick="saveUrls()">URL 전체 저장</button></div>
-  </div>
-</div>
-
 </div><!-- /main -->
 
 <script>
@@ -776,7 +731,7 @@ async function testGsConnection() {
   } catch(err) { result.style.color='var(--red)'; result.textContent='❌ 실패: '+err.message; }
 }
 
-function showGsSetup() { go('urls', document.querySelectorAll('.tab')[4]); }
+function showGsSetup() { go('booking', document.querySelectorAll('.tab')[2]); }
 
 /* ── URL 저장/불러오기 ── */
 const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree','url-threads','url-kakao','url-youtube','url-gs-view','url-gs-edit','faq-url','rule-url','tmpl-url'];
@@ -784,11 +739,11 @@ function saveUrls() { URL_IDS.forEach(k => { const el=document.getElementById(k)
 function saveFaq()  { ['faq-url','rule-url','tmpl-url'].forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); }); tick('링크 저장'); }
 function loadUrls() { URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; }); }
 function openU(id)  { const u=document.getElementById(id)?.value.trim(); if(u) window.open(u,'_blank'); else alert('URL을 먼저 입력해주세요.'); }
-function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else go('urls',document.querySelectorAll('.tab')[4]); }
+function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else alert('구글시트 링크를 먼저 등록해주세요.'); }
 function flowGo(id,e) {
   e.preventDefault();
   const u = localStorage.getItem(id) || document.getElementById(id)?.value.trim();
-  if(u) window.open(u,'_blank'); else { alert('URL 관리 탭에서 URL을 먼저 저장해주세요.'); go('urls',document.querySelectorAll('.tab')[4]); }
+  if(u) window.open(u,'_blank'); else { alert('워크보드 URL 관리 탭에서 URL을 먼저 저장해주세요.'); }
 }
 
 /* ── 탭 전환 ── */
