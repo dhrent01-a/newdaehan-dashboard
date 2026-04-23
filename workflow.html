@@ -3,146 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>뉴대한렌트카 — 마케팅 워크플로우</title>
+<title>뉴대한렌트카 — 마케팅 워크보드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d1117;--surface:#161b27;--surface2:#1e2436;--surface3:#252d42;
-  --border:#2a3148;--border2:#353d58;
-  --text:#dde2f0;--text2:#8892b0;--text3:#4a5270;
-  --green:#2dd4a0;--green-bg:rgba(45,212,160,.1);--green-bd:rgba(45,212,160,.25);
-  --orange:#fb923c;--blue:#60a5fa;--blue-bg:rgba(96,165,250,.1);
-  --yellow:#fbbf24;--yellow-bg:rgba(251,191,36,.1);
-  --pink:#f472b6;--red:#f87171;--red-bg:rgba(248,113,113,.1);
+  --bg:#f0f4f8;--surface:#ffffff;--surface2:#f8fafc;--surface3:#eef2f7;
+  --border:#d1dbe8;--border2:#b0bfcf;
+  --text:#1a2332;--text2:#3d5166;--text3:#6b7f96;
+  --green:#0d9e6e;--green-bg:rgba(13,158,110,.08);--green-bd:rgba(13,158,110,.25);
+  --orange:#d4680a;--blue:#1a6fc4;--blue-bg:rgba(26,111,196,.08);
+  --yellow:#b07d00;--yellow-bg:rgba(176,125,0,.08);
+  --pink:#c0317a;--red:#c0392b;--red-bg:rgba(192,57,43,.08);
   --mono:'DM Mono',monospace;--sans:'Noto Sans KR',sans-serif;--r:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 10%,rgba(45,212,160,.05) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 90% 90%,rgba(96,165,250,.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.7;}
 
-.hdr{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:54px;}
+
+.hdr{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .hdr-left{display:flex;align-items:center;gap:12px;}
-.logo{background:var(--green);color:#000;font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:4px;}
-.hdr-title{font-size:14px;color:var(--text2);}
+.logo{background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:5px;}
+.hdr-title{font-size:15px;color:var(--text2);font-weight:500;}
 .hdr-right{display:flex;align-items:center;gap:10px;}
-.date-chip{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 10px;}
-.dash-link{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:8px;padding:5px 13px;font-size:12px;color:var(--green);text-decoration:none;transition:all .2s;}
-.dash-link:hover{background:var(--green);color:#000;}
-.save-chip{font-family:var(--mono);font-size:10px;color:var(--text3);}
+.date-chip{font-family:var(--mono);font-size:12px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;}
+.dash-link{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:8px;padding:5px 14px;font-size:13px;color:var(--green);text-decoration:none;font-weight:600;transition:all .2s;}
+.dash-link:hover{background:var(--green);color:#fff;}
+.save-chip{font-family:var(--mono);font-size:11px;color:var(--text3);}
 
-.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;position:sticky;top:54px;z-index:99;}
-.tab{padding:13px 18px;font-size:13px;color:var(--text2);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-family:var(--sans);transition:all .15s;}
+.nav{background:#fff;border-bottom:2px solid var(--border);padding:0 28px;display:flex;position:sticky;top:56px;z-index:99;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.tab{padding:14px 20px;font-size:14px;color:var(--text2);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;font-family:var(--sans);font-weight:500;transition:all .15s;margin-bottom:-2px;}
 .tab:hover{color:var(--text);}
-.tab.on{color:var(--green);font-weight:500;border-bottom-color:var(--green);}
+.tab.on{color:var(--green);font-weight:700;border-bottom-color:var(--green);}
 
 .main{position:relative;z-index:1;padding:24px 28px;max-width:1300px;margin:0 auto;}
 .sheet{display:none;}.sheet.on{display:block;}
 
-.sec{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.sec{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:14px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
 
 /* 전환율 */
-.conv-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-.conv-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
-.conv-label{font-size:10px;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
-.conv-val{font-size:22px;font-weight:700;font-family:var(--mono);line-height:1.1;}
-.conv-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.conv-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.conv-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.conv-label{font-size:11px;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px;font-weight:600;}
+.conv-val{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1.1;}
+.conv-sub{font-size:12px;color:var(--text3);margin-top:3px;}
 .g{color:var(--green);}.o{color:var(--orange);}.b{color:var(--blue);}
 
 /* 채널 카드 */
 .ch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
 @media(min-width:1100px){.ch-grid{grid-template-columns:repeat(4,1fr);}}
-.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s;}
+.ch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .2s,border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.ch-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);}
 .ch-top{padding:14px 16px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
 .ch-iw{display:flex;align-items:center;gap:9px;}
-.ch-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.ch-nm{font-size:13px;font-weight:600;margin-bottom:2px;}
-.ch-sub{font-size:10px;color:var(--text3);}
-.st-sel{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;border:none;cursor:pointer;font-family:var(--sans);outline:none;}
+.ch-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ch-nm{font-size:14px;font-weight:700;margin-bottom:2px;color:var(--text);}
+.ch-sub{font-size:11px;color:var(--text3);}
+.st-sel{font-size:12px;font-weight:600;padding:4px 9px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-family:var(--sans);outline:none;background:var(--surface2);}
 .ch-body{padding:0 16px 14px;}
-.ch-last{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.ch-last-lbl{font-size:11px;color:var(--text3);}
-.ch-last-inp{font-size:11px;font-family:var(--mono);background:none;border:none;color:var(--text2);outline:none;text-align:right;width:120px;cursor:pointer;}
-.cta-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;padding:7px 10px;border-radius:7px;background:var(--surface2);}
-.cta-row input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;cursor:pointer;}
-.cta-row label{font-size:12px;cursor:pointer;flex:1;}
-.cta-row.ok{background:var(--green-bg);}
-.cta-row.ok label{color:var(--green);}
-.ch-links{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
-.ch-lnk{font-size:11px;padding:3px 9px;border-radius:5px;text-decoration:none;border:1px solid var(--border);color:var(--text2);background:var(--surface2);transition:all .15s;cursor:pointer;font-family:var(--sans);white-space:nowrap;}
-.ch-lnk:hover{color:var(--text);border-color:var(--border2);}
-.ch-memo{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);font-family:var(--sans);resize:none;line-height:1.5;}
-.ch-memo:focus{outline:none;border-color:var(--border2);}
+.cta-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;padding:8px 10px;border-radius:7px;background:var(--surface2);}
+.cta-row input[type=checkbox]{accent-color:var(--green);width:15px;height:15px;cursor:pointer;}
+.cta-row label{font-size:13px;cursor:pointer;flex:1;color:var(--text2);}
+.cta-row.ok{background:var(--green-bg);border:1px solid var(--green-bd);}
+.cta-row.ok label{color:var(--green);font-weight:600;}
+.ch-links{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.ch-lnk{font-size:12px;padding:4px 10px;border-radius:6px;text-decoration:none;border:1px solid var(--border);color:var(--text2);background:var(--surface2);transition:all .15s;cursor:pointer;font-family:var(--sans);white-space:nowrap;font-weight:500;}
+.ch-lnk:hover{color:var(--text);border-color:var(--border2);background:var(--surface3);}
+.ch-memo{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;color:var(--text);font-family:var(--sans);resize:none;line-height:1.5;}
+.ch-memo:focus{outline:none;border-color:var(--green);}
 .ch-memo::placeholder{color:var(--text3);}
 
-.blog-c{border-color:#1c3828;} .blog-c:hover{border-color:var(--green);}
-.insta-c{border-color:#3a1b2e;} .insta-c:hover{border-color:var(--pink);}
-.yt-c{border-color:#3a1b1b;} .yt-c:hover{border-color:var(--red);}
-.kakao-c{border-color:#3a3210;} .kakao-c:hover{border-color:var(--yellow);}
-.blog-ico{background:rgba(3,199,90,.15);}
-.insta-ico{background:rgba(244,114,182,.15);}
-.yt-ico{background:rgba(248,113,113,.15);}
-.kakao-ico{background:rgba(251,191,36,.15);}
+.blog-c{border-top:3px solid #03C75A;}
+.insta-c{border-top:3px solid #E1306C;}
+.yt-c{border-top:3px solid #FF0000;}
+.kakao-c{border-top:3px solid #FEE500;}
+.blog-ico{background:rgba(3,199,90,.1);}
+.insta-ico{background:rgba(225,48,108,.08);}
+.yt-ico{background:rgba(255,0,0,.08);}
+.kakao-ico{background:rgba(254,229,0,.15);}
 
 /* KPI */
 .kpi-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.kpi-hdr select{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--text);font-family:var(--sans);outline:none;}
-.ktbl{width:100%;border-collapse:collapse;font-size:13px;}
-.ktbl th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);padding:7px 10px;border-bottom:1px solid var(--border);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;}
-.ktbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.kpi-hdr select{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:14px;color:var(--text);font-family:var(--sans);outline:none;}
+.ktbl{width:100%;border-collapse:collapse;font-size:14px;}
+.ktbl th{text-align:left;font-size:11px;font-weight:700;color:var(--text3);padding:8px 12px;border-bottom:2px solid var(--border);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;background:var(--surface2);}
+.ktbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .ktbl tr:last-child td{border-bottom:none;}
 .ktbl tr:hover td{background:var(--surface2);}
-.ki{background:none;border:none;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;width:80px;text-align:right;}
+.ki{background:none;border:none;color:var(--text);font-family:var(--mono);font-size:14px;outline:none;width:85px;text-align:right;font-weight:600;}
 .ki:focus{color:var(--green);}
-.kbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;}
-.kdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.trend{font-size:11px;font-family:var(--mono);}
+.kbadge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;}
+.kdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.trend{font-size:12px;font-family:var(--mono);font-weight:600;}
 .trend.up{color:var(--green);}.trend.dn{color:var(--red);}.trend.flat{color:var(--text3);}
-.knote{background:none;border:none;color:var(--text2);font-family:var(--sans);font-size:12px;outline:none;width:100%;}
+.knote{background:none;border:none;color:var(--text2);font-family:var(--sans);font-size:13px;outline:none;width:100%;}
 .knote::placeholder{color:var(--text3);}
 
 /* 스케줄 */
 .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px;}
-.day-col{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 8px;min-height:100px;}
-.day-nm{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-.day-col.today{border-color:var(--green-bd);background:var(--green-bg);}
+.day-col{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 8px;min-height:110px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+.day-nm{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.day-col.today{border-color:var(--green);background:var(--green-bg);}
 .day-col.today .day-nm{color:var(--green);}
 .si{font-size:11px;padding:4px 7px;border-radius:5px;margin-bottom:4px;cursor:pointer;display:block;}
-.si.blog{background:rgba(3,199,90,.12);color:#2dd4a0;}
-.si.insta{background:rgba(244,114,182,.12);color:#f472b6;}
-.si.youtube{background:rgba(248,113,113,.12);color:#f87171;}
-.si.kakao{background:rgba(251,191,36,.12);color:#fbbf24;}
-.si.threads{background:rgba(139,144,168,.12);color:#8892b0;}
-.day-add{font-size:10px;color:var(--text3);cursor:pointer;padding:3px 0;display:block;text-align:center;}
-.day-add:hover{color:var(--text2);}
+.si.blog{background:rgba(3,199,90,.15);color:#0a7a50;}
+.si.insta{background:rgba(225,48,108,.1);color:#a01f58;}
+.si.youtube{background:rgba(255,0,0,.1);color:#a01010;}
+.si.kakao{background:rgba(254,229,0,.2);color:#7a6000;}
+.si.threads{background:rgba(100,100,100,.1);color:#4a4a4a;}
+.day-add{font-size:11px;color:var(--text3);cursor:pointer;padding:3px 0;display:block;text-align:center;}
+.day-add:hover{color:var(--green);}
 
-.plan-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.plan-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.plan-title{flex:1;font-size:13px;}
-.plan-st{font-size:11px;padding:2px 8px;border-radius:6px;}
-.plan-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;}
+.plan-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+.plan-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.plan-title{flex:1;font-size:14px;color:var(--text);}
+.plan-st{font-size:12px;padding:3px 10px;border-radius:6px;font-weight:600;}
+.plan-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;}
 .plan-del:hover{color:var(--red);}
 
 /* 분기 */
 .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
-.qtitle{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
-.qta{width:100%;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.75;}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.qtitle{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px;}
+.qta{width:100%;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:14px;resize:none;outline:none;line-height:1.8;}
 .qta::placeholder{color:var(--text3);}
 .pos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.pos-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
-.pos-ch{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
-.pos-sel{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:12px;color:var(--text);font-family:var(--sans);outline:none;margin-bottom:6px;}
-.pos-ta{width:100%;background:none;border:none;color:var(--text2);font-family:var(--sans);font-size:12px;resize:none;outline:none;line-height:1.6;}
+.pos-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.pos-ch{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;color:var(--text);}
+.pos-sel{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:5px 10px;font-size:13px;color:var(--text);font-family:var(--sans);outline:none;margin-bottom:8px;}
+.pos-ta{width:100%;background:none;border:none;color:var(--text2);font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.6;}
 .pos-ta::placeholder{color:var(--text3);}
 
-.btn{padding:6px 14px;border:1px solid var(--border2);border-radius:6px;background:var(--surface2);font-size:12px;font-family:var(--sans);cursor:pointer;color:var(--text);transition:all .15s;text-decoration:none;display:inline-block;}
-.btn:hover{background:var(--surface3);}
-.btn-g{background:var(--green-bg);border-color:var(--green-bd);color:var(--green);}
-.btn-g:hover{background:var(--green);color:#000;}
-.btn-row{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
+.btn{padding:7px 16px;border:1px solid var(--border2);border-radius:7px;background:var(--surface2);font-size:13px;font-family:var(--sans);cursor:pointer;color:var(--text);transition:all .15s;text-decoration:none;display:inline-block;font-weight:500;}
+.btn:hover{background:var(--surface3);border-color:var(--border2);}
+.btn-g{background:var(--green-bg);border-color:var(--green-bd);color:var(--green);font-weight:600;}
+.btn-g:hover{background:var(--green);color:#fff;}
+.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+/* 우선순위 체크 */
+.prio-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;cursor:pointer;transition:all .15s;user-select:none;}
+.prio-row:hover{border-color:var(--green);background:var(--green-bg);}
+.prio-row.done{background:var(--green-bg);border-color:var(--green-bd);}
+.prio-num{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--text3);font-size:12px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.prio-row.done .prio-num{background:var(--green);color:#fff;}
+.prio-label{font-size:13px;color:var(--text2);flex:1;line-height:1.4;}
+.prio-row.done .prio-label{color:var(--green);font-weight:600;}
+.prio-memo{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:4px 12px 6px;font-size:12px;color:var(--text3);font-family:var(--sans);outline:none;margin-bottom:8px;}
+.prio-memo:focus{border-bottom-color:var(--green);color:var(--text);}
+.prio-memo::placeholder{color:var(--border2);}
 
 @media(max-width:768px){
   .hdr,.nav,.main{padding-left:14px;padding-right:14px;}
@@ -156,13 +165,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <div class="hdr">
   <div class="hdr-left">
-    <div class="logo">워크플로우</div>
+    <div class="logo">워크보드</div>
     <span class="hdr-title">뉴대한렌트카 마케팅</span>
   </div>
   <div class="hdr-right">
     <span class="date-chip" id="today-chip"></span>
     <span class="save-chip" id="save-chip">—</span>
-    <a class="dash-link" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank">📊 대시보드 →</a>
+    <a class="dash-link" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank">📊 콘텐츠 대시보드 →</a>
   </div>
 </div>
 
@@ -185,7 +194,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="conv-box"><div class="conv-label">플랫폼 대비</div><div class="conv-val o" id="cv-gap">—</div><div class="conv-sub">자사 − 플랫폼</div></div>
     <div class="conv-box"><div class="conv-label">목표(50%)까지</div><div class="conv-val b" id="cv-goal">—</div><div class="conv-sub">추가 필요 %p</div></div>
   </div>
-  <div style="font-size:11px;color:var(--text3);margin-top:-10px;margin-bottom:20px;">※ 대시보드 구글시트 연동 기준 자동 표시 &nbsp;·&nbsp; <a href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank" style="color:var(--blue);">대시보드 직접 확인 →</a></div>
+  <div style="font-size:12px;color:var(--text3);margin-top:-10px;margin-bottom:20px;">※ 콘텐츠 대시보드 구글시트 연동 기준 자동 표시</div>
+
+  <div class="sec">오늘의 업무 체크 <span style="font-size:10px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;">클릭 순서대로 우선순위 숫자 표시 · 다시 클릭하면 해제</span></div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:6px;">콘텐츠 작업</div>
+        <textarea class="ch-memo" id="pm-content" rows="2" placeholder="오늘 콘텐츠 주요 이슈 / 메모…" onchange="save()" style="margin-bottom:10px;"></textarea>
+        <div class="prio-row" id="pr-c1" onclick="togglePrio('c1')"><span class="prio-num" id="pn-c1"></span><span class="prio-label">발행 예정 콘텐츠 확인 (CTA · 예약링크 점검)</span></div>
+        <div class="prio-row" id="pr-c2" onclick="togglePrio('c2')"><span class="prio-num" id="pn-c2"></span><span class="prio-label">콘텐츠 제작</span></div>
+        <div class="prio-row" id="pr-c3" onclick="togglePrio('c3')"><span class="prio-num" id="pn-c3"></span><span class="prio-label">콘텐츠 기획</span></div>
+        <div class="prio-row" id="pr-c4" onclick="togglePrio('c4')"><span class="prio-num" id="pn-c4"></span><span class="prio-label">콘텐츠 발행</span></div>
+        <div class="prio-row" id="pr-c5" onclick="togglePrio('c5')"><span class="prio-num" id="pn-c5"></span><span class="prio-label">확산 및 마케팅 작업</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:6px;">운영 점검</div>
+        <textarea class="ch-memo" id="pm-ops" rows="2" placeholder="오늘 운영 주요 이슈 / 메모…" onchange="save()" style="margin-bottom:10px;"></textarea>
+        <div class="prio-row" id="pr-s1" onclick="togglePrio('s1')"><span class="prio-num" id="pn-s1"></span><span class="prio-label">플레이스 / 블로그 리뷰 관리</span></div>
+        <div class="prio-row" id="pr-s2" onclick="togglePrio('s2')"><span class="prio-num" id="pn-s2"></span><span class="prio-label">채널별 댓글 관리</span></div>
+        <div class="prio-row" id="pr-s3" onclick="togglePrio('s3')"><span class="prio-num" id="pn-s3"></span><span class="prio-label">채널 플로우 설정 확인</span></div>
+        <div class="prio-row" id="pr-s4" onclick="togglePrio('s4')"><span class="prio-num" id="pn-s4"></span><span class="prio-label">시즌 이슈 체크</span></div>
+        <div class="prio-row" id="pr-s5" onclick="togglePrio('s5')"><span class="prio-num" id="pn-s5"></span><span class="prio-label">가격 / 차량 변경사항 전 채널 반영</span></div>
+        <div class="prio-row" id="pr-s6" onclick="togglePrio('s6')"><span class="prio-num" id="pn-s6"></span><span class="prio-label">KPI 수치 기록 (주간 / 월간)</span></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank" style="color:var(--green);border-color:var(--green-bd);font-weight:600;">📊 콘텐츠 대시보드 →</a>
+      <button class="btn" onclick="resetPrio()">초기화</button>
+      <button class="btn btn-g" onclick="saveAll()">저장</button>
+    </div>
+  </div>
 
   <div class="sec">채널별 운영 상태</div>
   <div class="ch-grid">
@@ -196,12 +235,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <select class="st-sel" id="st-blog" onchange="cSt(this);save()"><option value="on">운영중</option><option value="plan">기획중</option><option value="pause">중단</option></select>
       </div>
       <div class="ch-body">
-        <div class="ch-last"><span class="ch-last-lbl">마지막 발행</span><input class="ch-last-inp" id="last-blog" type="date" onchange="save()"></div>
-        <div class="cta-row" id="cw-blog"><input type="checkbox" id="cta-blog" onchange="cta('blog');save()"><label for="cta-blog">CTA / 예약링크 살아있음</label></div>
         <div class="ch-links">
-          <a class="ch-lnk" style="color:var(--green);border-color:rgba(45,212,160,.4);" href="#" onclick="openSaved('url-blog',event)">블로그 홈 ↗</a>
-          <a class="ch-lnk" href="https://analytics.naver.com" target="_blank">애널리틱스 ↗</a>
-          <a class="ch-lnk" href="https://blog.naver.com" target="_blank">관리자 ↗</a>
+          <a class="ch-lnk" style="color:var(--green);border-color:rgba(3,199,90,.3);font-weight:600;" href="#" onclick="openSaved('url-blog',event)">블로그 홈 ↗</a>
+          <a class="ch-lnk" href="https://admin.blog.naver.com/dh_jejurent/stat/today" target="_blank">블로그 통계 ↗</a>
+          <a class="ch-lnk" href="https://analytics.naver.com" target="_blank">네이버 애널리틱스 ↗</a>
         </div>
         <textarea class="ch-memo" id="memo-blog" rows="2" placeholder="이슈 / 메모…" onchange="save()"></textarea>
       </div>
@@ -213,11 +250,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <select class="st-sel" id="st-insta" onchange="cSt(this);save()"><option value="plan">기획중</option><option value="on">운영중</option><option value="pause">중단</option></select>
       </div>
       <div class="ch-body">
-        <div class="ch-last"><span class="ch-last-lbl">마지막 발행</span><input class="ch-last-inp" id="last-insta" type="date" onchange="save()"></div>
-        <div class="cta-row" id="cw-insta"><input type="checkbox" id="cta-insta" onchange="cta('insta');save()"><label for="cta-insta">링크인바이오 → 홈페이지 연결</label></div>
         <div class="ch-links">
-          <a class="ch-lnk" style="color:var(--pink);border-color:rgba(244,114,182,.4);" href="#" onclick="openSaved('url-insta',event)">계정 ↗</a>
-          <a class="ch-lnk" href="https://business.instagram.com" target="_blank">인사이트 ↗</a>
+          <a class="ch-lnk" style="color:var(--pink);border-color:rgba(225,48,108,.3);font-weight:600;" href="#" onclick="openSaved('url-insta',event)">계정 ↗</a>
+          <a class="ch-lnk" href="https://business.instagram.com/insights" target="_blank">인사이트 ↗</a>
+          <a class="ch-lnk" href="https://www.facebook.com/adsmanager" target="_blank">광고 관리자 ↗</a>
         </div>
         <textarea class="ch-memo" id="memo-insta" rows="2" placeholder="이슈 / 메모…" onchange="save()"></textarea>
       </div>
@@ -229,11 +265,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <select class="st-sel" id="st-yt" onchange="cSt(this);save()"><option value="plan">기획중</option><option value="on">운영중</option><option value="pause">중단</option></select>
       </div>
       <div class="ch-body">
-        <div class="ch-last"><span class="ch-last-lbl">마지막 업로드</span><input class="ch-last-inp" id="last-yt" type="date" onchange="save()"></div>
-        <div class="cta-row" id="cw-yt"><input type="checkbox" id="cta-yt" onchange="cta('yt');save()"><label for="cta-yt">영상 설명란 홈페이지 링크 포함</label></div>
         <div class="ch-links">
-          <a class="ch-lnk" style="color:var(--red);border-color:rgba(248,113,113,.4);" href="#" onclick="openSaved('url-youtube',event)">채널 ↗</a>
-          <a class="ch-lnk" href="https://studio.youtube.com" target="_blank">스튜디오 ↗</a>
+          <a class="ch-lnk" style="color:var(--red);border-color:rgba(255,0,0,.3);font-weight:600;" href="#" onclick="openSaved('url-youtube',event)">채널 ↗</a>
+          <a class="ch-lnk" href="https://studio.youtube.com" target="_blank">크리에이터 스튜디오 ↗</a>
         </div>
         <textarea class="ch-memo" id="memo-yt" rows="2" placeholder="채널 개설 일정 / 이슈…" onchange="save()"></textarea>
       </div>
@@ -245,11 +279,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <select class="st-sel" id="st-kakao" onchange="cSt(this);save()"><option value="on">운영중</option><option value="plan">기획중</option><option value="pause">중단</option></select>
       </div>
       <div class="ch-body">
-        <div class="ch-last"><span class="ch-last-lbl">마지막 공지 업데이트</span><input class="ch-last-inp" id="last-kakao" type="date" onchange="save()"></div>
-        <div class="cta-row" id="cw-kakao"><input type="checkbox" id="cta-kakao" onchange="cta('kakao');save()"><label for="cta-kakao">AI 자동응답 정상 작동</label></div>
         <div class="ch-links">
-          <a class="ch-lnk" style="color:var(--yellow);border-color:rgba(251,191,36,.4);" href="#" onclick="openSaved('url-kakao',event)">채널 관리자 ↗</a>
-          <a class="ch-lnk" href="https://business.kakao.com" target="_blank">비즈니스 ↗</a>
+          <a class="ch-lnk" style="color:var(--yellow);border-color:rgba(254,229,0,.4);background:rgba(254,229,0,.08);font-weight:600;" href="#" onclick="openSaved('url-kakao',event)">채널 ↗</a>
+          <a class="ch-lnk" href="https://center-pf.kakao.com" target="_blank">관리자센터 ↗</a>
         </div>
         <textarea class="ch-memo" id="memo-kakao" rows="2" placeholder="이슈 / 메모…" onchange="save()"></textarea>
       </div>
@@ -257,29 +289,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   </div>
 
-  <div class="sec">유기적 연결 점검</div>
-  <div class="card">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;">OSMU 흐름</div>
-        <div class="cta-row" id="cw-o1"><input type="checkbox" id="o1" onchange="cta2('o1');save()"><label for="o1">유튜브 → 인스타 릴스 배포</label></div>
-        <div class="cta-row" id="cw-o2"><input type="checkbox" id="o2" onchange="cta2('o2');save()"><label for="o2">유튜브 → 쓰레드 텍스트 배포</label></div>
-        <div class="cta-row" id="cw-o3"><input type="checkbox" id="o3" onchange="cta2('o3');save()"><label for="o3">유튜브 → 블로그 SEO 재가공</label></div>
-        <div class="cta-row" id="cw-o4"><input type="checkbox" id="o4" onchange="cta2('o4');save()"><label for="o4">전 채널 → 자사 홈페이지 CTA</label></div>
-      </div>
-      <div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600;">공지 동기화</div>
-        <div class="cta-row" id="cw-s1"><input type="checkbox" id="s1" onchange="cta2('s1');save()"><label for="s1">가격/차량 변경 전 채널 반영</label></div>
-        <div class="cta-row" id="cw-s2"><input type="checkbox" id="s2" onchange="cta2('s2');save()"><label for="s2">시즌 이슈 콘텐츠 선제 기획</label></div>
-        <div class="cta-row" id="cw-s3"><input type="checkbox" id="s3" onchange="cta2('s3');save()"><label for="s3">리뷰 유도 플로우 작동 중</label></div>
-        <div class="cta-row" id="cw-s4"><input type="checkbox" id="s4" onchange="cta2('s4');save()"><label for="s4">대시보드 데이터 최신 상태</label></div>
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn" onclick="resetChecks()">체크 초기화</button>
-      <button class="btn btn-g" onclick="save()">저장</button>
-    </div>
-  </div>
 
 </div>
 
@@ -360,7 +369,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <a class="btn" href="https://studio.youtube.com" target="_blank">유튜브 스튜디오 ↗</a>
     <a class="btn" href="https://business.instagram.com" target="_blank">인스타 인사이트 ↗</a>
     <a class="btn" href="https://business.kakao.com" target="_blank">카카오 비즈니스 ↗</a>
-    <a class="btn btn-g" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank">📊 마케팅 대시보드 ↗</a>
+    <a class="btn btn-g" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank">📊 콘텐츠 대시보드 ↗</a>
   </div>
 
 </div>
@@ -508,6 +517,12 @@ async function loadFromSheet() {
   }
 }
 
+function saveAll() {
+  save(); // localStorage
+  saveToSheet(); // 구글시트 (업무일지 포함)
+  tick('저장됨 ' + new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+}
+
 async function saveToSheet() {
   try {
     gsStatus('loading');
@@ -548,10 +563,24 @@ async function saveToSheet() {
       fix : document.getElementById('q-fix')?.value  || '',
     }];
 
+    // 업무일지 — 메모가 하나라도 있을 때만 저장
+    const today = new Date().toISOString().slice(0,10);
+    const memos = {};
+    const chKeys = ['blog','insta','yt','kakao'];
+    const vc=document.getElementById('pm-content')?.value||'';if(vc)memos['콘텐츠작업']=vc;
+    const vo=document.getElementById('pm-ops')?.value||'';if(vo)memos['운영점검']=vo;
+    chKeys.forEach(ch=>{const v=document.getElementById('memo-'+ch)?.value||'';if(v)memos['채널_'+ch]=v;});
+    const hasMemo = Object.keys(memos).length > 0;
+
+    const payload = { wfCh, wfKpi, wfQuarter };
+    if (hasMemo) {
+      payload.wfLog = { date: today, memos };
+    }
+
     const res  = await fetch(DASH, {
       method: 'POST', redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ wfCh, wfKpi, wfQuarter }),
+      body: JSON.stringify(payload),
     });
     const json = JSON.parse(await res.text());
     if (!json.ok) throw new Error(json.error);
@@ -594,7 +623,7 @@ async function loadDash() {
   } catch(e){}
 }
 
-function openSaved(k,e){e.preventDefault();const u=localStorage.getItem(k)||'';if(u)window.open(u,'_blank');else alert('대시보드 ⑤ URL 관리 탭에서 '+k+' URL을 먼저 저장해주세요.');}
+function openSaved(k,e){e.preventDefault();const u=localStorage.getItem(k)||'';if(u)window.open(u,'_blank');else alert('워크보드 ⑤ URL 관리 탭에서 '+k+' URL을 먼저 저장해주세요.');}
 
 function go(id,btn){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));document.getElementById('sheet-'+id).classList.add('on');btn.classList.add('on');if(id==='sched')renderWeek();}
 
@@ -605,141 +634,44 @@ function cSt(s){const bg={on:'rgba(45,212,160,.12)',plan:'rgba(251,191,36,.12)',
 function cta(ch){const cb=document.getElementById('cta-'+ch);const w=document.getElementById('cw-'+ch);if(w)w.className='cta-row'+(cb.checked?' ok':'');}
 function cta2(id){const cb=document.getElementById(id);const w=document.getElementById('cw-'+id);if(w)w.className='cta-row'+(cb.checked?' ok':'');}
 
-function resetChecks(){['blog','insta','yt','kakao'].forEach(ch=>{const cb=document.getElementById('cta-'+ch);if(cb){cb.checked=false;cta(ch);}});['o1','o2','o3','o4','s1','s2','s3','s4'].forEach(id=>{const cb=document.getElementById(id);if(cb){cb.checked=false;cta2(id);}});save();}
+// 우선순위 체크 시스템
+const PRIO_IDS = ['c1','c2','c3','c4','c5','s1','s2','s3','s4','s5','s6'];
+let prioOrder = []; // 클릭 순서 배열
 
-function save(){
-  const d={};
-  ['blog','insta','yt','kakao'].forEach(ch=>{
-    d['st_'+ch]=document.getElementById('st-'+ch)?.value||'';
-    d['last_'+ch]=document.getElementById('last-'+ch)?.value||'';
-    d['memo_'+ch]=document.getElementById('memo-'+ch)?.value||'';
-    d['cta_'+ch]=document.getElementById('cta-'+ch)?.checked||false;
-  });
-  ['o1','o2','o3','o4','s1','s2','s3','s4'].forEach(id=>{d['chk_'+id]=document.getElementById(id)?.checked||false;});
-  localStorage.setItem(P+'ch',JSON.stringify(d));
-  tick();
-}
-
-function load(){
-  const d=JSON.parse(localStorage.getItem(P+'ch')||'{}');
-  ['blog','insta','yt','kakao'].forEach(ch=>{
-    const st=document.getElementById('st-'+ch);if(st&&d['st_'+ch]){st.value=d['st_'+ch];cSt(st);}
-    const last=document.getElementById('last-'+ch);if(last&&d['last_'+ch])last.value=d['last_'+ch];
-    const memo=document.getElementById('memo-'+ch);if(memo&&d['memo_'+ch])memo.value=d['memo_'+ch];
-    const cb=document.getElementById('cta-'+ch);if(cb&&d['cta_'+ch]!==undefined){cb.checked=d['cta_'+ch];cta(ch);}
-  });
-  ['o1','o2','o3','o4','s1','s2','s3','s4'].forEach(id=>{const cb=document.getElementById(id);if(cb&&d['chk_'+id]!==undefined){cb.checked=d['chk_'+id];cta2(id);}});
+function togglePrio(id) {
+  const idx = prioOrder.indexOf(id);
+  if (idx === -1) {
+    prioOrder.push(id);
+  } else {
+    prioOrder.splice(idx, 1);
+  }
+  renderPrio();
+  save();
 }
 
-const KFS=['blog-1','blog-2','blog-3','insta-1','insta-2','insta-3','yt-1','yt-2','yt-3','kakao-1','kakao-2','kakao-3','home-1','home-2','home-3'];
-const KNS=['blog','insta','yt','kakao','home'];
-function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date().getFullYear();const m=document.getElementById('kpi-month')?.value||(new Date().getMonth()+1);return P+'kpi_'+y+'_'+m;}
-function saveKpi(){
-  const d={};
-  KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
-  KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
-  d.good=document.getElementById('kpi-good')?.value||'';
-  d.fix =document.getElementById('kpi-fix')?.value||'';
-  localStorage.setItem(kpiKey(),JSON.stringify(d));
-  calcTrend();tick();
-}
-function loadKpi(){
-  const d=JSON.parse(localStorage.getItem(kpiKey())||'{}');
-  KFS.forEach(f=>{const el=document.getElementById('k-'+f);if(el)el.value=d['k_'+f]||'';});
-  KNS.forEach(f=>{const el=document.getElementById('kn-'+f);if(el)el.value=d['n_'+f]||'';});
-  const g=document.getElementById('kpi-good');if(g)g.value=d.good||'';
-  const fx=document.getElementById('kpi-fix');if(fx)fx.value=d.fix||'';
-  calcTrend();
-}
-function calcTrend(){
-  const y=parseInt(document.getElementById('kpi-year')?.value)||new Date().getFullYear();
-  const m=parseInt(document.getElementById('kpi-month')?.value)||(new Date().getMonth()+1);
-  const pm=m===1?12:m-1,py=m===1?y-1:y;
-  const prev=JSON.parse(localStorage.getItem(P+'kpi_'+py+'_'+pm)||'{}');
-  [['blog','k-blog-1'],['insta','k-insta-1'],['yt','k-yt-1'],['kakao','k-kakao-1'],['home','k-home-1']].forEach(([ch,fid])=>{
-    const cur=parseFloat(document.getElementById(fid)?.value)||0;
-    const prv=parseFloat(prev['k_'+fid.replace('k-','')]||'0')||0;
-    const el=document.getElementById('tr-'+ch);if(!el)return;
-    if(!cur||!prv){el.textContent='—';el.className='trend flat';return;}
-    const diff=cur-prv;
-    el.textContent=(diff>=0?'▲ ':'▼ ')+Math.abs(diff).toLocaleString();
-    el.className='trend '+(diff>=0?'up':'dn');
+function renderPrio() {
+  PRIO_IDS.forEach(id => {
+    const row = document.getElementById('pr-' + id);
+    const num = document.getElementById('pn-' + id);
+    if (!row || !num) return;
+    const order = prioOrder.indexOf(id);
+    if (order === -1) {
+      row.classList.remove('done');
+      num.textContent = '';
+    } else {
+      row.classList.add('done');
+      num.textContent = order + 1;
+    }
   });
 }
 
-function saveQ(){
-  const q=document.getElementById('q-sel')?.value||'Q2';
-  const d={goal:document.getElementById('q-goal')?.value||'',strat:document.getElementById('q-strat')?.value||'',good:document.getElementById('q-good')?.value||'',fix:document.getElementById('q-fix')?.value||''};
-  ['blog','insta','yt','kakao'].forEach(ch=>{d['p_'+ch]=document.getElementById('pos-'+ch)?.value||'';d['pm_'+ch]=document.getElementById('pos-'+ch+'-m')?.value||'';});
-  localStorage.setItem(P+'q_'+q,JSON.stringify(d));tick();
+function resetPrio() {
+  prioOrder = [];
+  const ec=document.getElementById('pm-content');if(ec)ec.value='';
+  const eo=document.getElementById('pm-ops');if(eo)eo.value='';
+  renderPrio();
+  save();
 }
-function loadQ(){
-  const q=document.getElementById('q-sel')?.value||'Q2';
-  const d=JSON.parse(localStorage.getItem(P+'q_'+q)||'{}');
-  ['goal','strat','good','fix'].forEach(f=>{const el=document.getElementById('q-'+f);if(el)el.value=d[f]||'';});
-  ['blog','insta','yt','kakao'].forEach(ch=>{
-    const s=document.getElementById('pos-'+ch);if(s&&d['p_'+ch])s.value=d['p_'+ch];
-    const m=document.getElementById('pos-'+ch+'-m');if(m)m.value=d['pm_'+ch]||'';
-  });
-}
-
-let sched={};
-function renderWeek(){
-  sched=JSON.parse(localStorage.getItem(P+'sched')||'{}');
-  const g=document.getElementById('week-grid');g.innerHTML='';
-  const today=new Date(),dow=today.getDay();
-  const mon=new Date(today);mon.setDate(today.getDate()-(dow===0?6:dow-1));
-  ['월','화','수','목','금','토','일'].forEach((nm,i)=>{
-    const d=new Date(mon);d.setDate(mon.getDate()+i);
-    const key=d.toISOString().slice(0,10);
-    const isT=key===today.toISOString().slice(0,10);
-    const col=document.createElement('div');
-    col.className='day-col'+(isT?' today':'');
-    col.innerHTML=`<div class="day-nm">${nm} ${d.getDate()}</div>`;
-    (sched[key]||[]).forEach((item,idx)=>{
-      const el=document.createElement('div');
-      el.className='si '+(item.ch||'blog');
-      el.textContent=item.text;
-      el.onclick=()=>{if(confirm('"'+item.text+'" 삭제?')){sched[key].splice(idx,1);localStorage.setItem(P+'sched',JSON.stringify(sched));renderWeek();}};
-      col.appendChild(el);
-    });
-    const ab=document.createElement('span');ab.className='day-add';ab.textContent='+ 추가';
-    ab.onclick=()=>addSched(key);col.appendChild(ab);g.appendChild(col);
-  });
-}
-function addSched(k){
-  const chs=['blog','insta','youtube','kakao','threads'];
-  const c=prompt('채널\n1.블로그 2.인스타 3.유튜브 4.카카오 5.쓰레드\n번호:','1');if(!c)return;
-  const t=prompt('콘텐츠:','');if(!t||!t.trim())return;
-  if(!sched[k])sched[k]=[];
-  sched[k].push({ch:chs[parseInt(c)-1]||'blog',text:t.trim()});
-  localStorage.setItem(P+'sched',JSON.stringify(sched));renderWeek();
-}
-
-let plans=[];
-function loadPlans(){plans=JSON.parse(localStorage.getItem(P+'plans')||'[]');renderPlans();}
-function renderPlans(){
-  const p=document.getElementById('plan-pool');if(!p)return;p.innerHTML='';
-  if(!plans.length){p.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0;">기획된 콘텐츠가 없습니다.</div>';return;}
-  const cc={blog:'#03C75A',insta:'#E1306C',youtube:'#FF0000',kakao:'#FEE500',threads:'#8892b0'};
-  const sb={idea:'var(--surface3)',writing:'var(--blue-bg)',ready:'var(--yellow-bg)',done:'var(--green-bg)'};
-  const sc={idea:'var(--text3)',writing:'var(--blue)',ready:'var(--yellow)',done:'var(--green)'};
-  const sl={idea:'아이디어',writing:'작성중',ready:'발행대기',done:'완료'};
-  plans.forEach((p2,i)=>{
-    const d=document.createElement('div');d.className='plan-item';
-    d.innerHTML=`<div class="plan-dot" style="background:${cc[p2.ch]||'#fff'};"></div><div class="plan-title">${p2.text}</div><span class="plan-st" style="background:${sb[p2.status]||sb.idea};color:${sc[p2.status]||sc.idea};">${sl[p2.status]||'아이디어'}</span><button class="plan-del" onclick="delPlan(${i})">✕</button>`;
-    document.getElementById('plan-pool').appendChild(d);
-  });
-}
-function addPlan(){
-  const chs=['blog','insta','youtube','kakao','threads'];
-  const c=prompt('채널\n1.블로그 2.인스타 3.유튜브 4.카카오 5.쓰레드\n번호:','1');if(!c)return;
-  const t=prompt('콘텐츠 제목/아이디어:','');if(!t||!t.trim())return;
-  const s=prompt('상태\n1.아이디어 2.작성중 3.발행대기 4.완료\n번호:','1');
-  plans.push({ch:chs[parseInt(c)-1]||'blog',text:t.trim(),status:['idea','writing','ready','done'][parseInt(s)-1]||'idea'});
-  localStorage.setItem(P+'plans',JSON.stringify(plans));renderPlans();
-}
-function delPlan(i){if(!confirm('삭제하시겠습니까?'))return;plans.splice(i,1);localStorage.setItem(P+'plans',JSON.stringify(plans));renderPlans();}
 
 function tick(m){const el=document.getElementById('save-chip');if(el)el.textContent=m||'저장됨 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});}
 
@@ -747,24 +679,24 @@ function save(){
   const d={};
   ['blog','insta','yt','kakao'].forEach(ch=>{
     d['st_'+ch]=document.getElementById('st-'+ch)?.value||'';
-    d['last_'+ch]=document.getElementById('last-'+ch)?.value||'';
     d['memo_'+ch]=document.getElementById('memo-'+ch)?.value||'';
-    d['cta_'+ch]=document.getElementById('cta-'+ch)?.checked||false;
   });
-  ['o1','o2','o3','o4','s1','s2','s3','s4'].forEach(id=>{d['chk_'+id]=document.getElementById(id)?.checked||false;});
+  d.prioOrder = prioOrder;
+  d.pm_content = document.getElementById('pm-content')?.value||'';
+  d.pm_ops = document.getElementById('pm-ops')?.value||'';
   localStorage.setItem(P+'ch',JSON.stringify(d));
-  saveToSheet(); // 구글시트 동기화
+  // 구글시트 저장은 명시적 저장 버튼에서만 실행
 }
 
 function load(){
   const d=JSON.parse(localStorage.getItem(P+'ch')||'{}');
   ['blog','insta','yt','kakao'].forEach(ch=>{
     const st=document.getElementById('st-'+ch);if(st&&d['st_'+ch]){st.value=d['st_'+ch];cSt(st);}
-    const last=document.getElementById('last-'+ch);if(last&&d['last_'+ch])last.value=d['last_'+ch];
     const memo=document.getElementById('memo-'+ch);if(memo&&d['memo_'+ch])memo.value=d['memo_'+ch];
-    const cb=document.getElementById('cta-'+ch);if(cb&&d['cta_'+ch]!==undefined){cb.checked=d['cta_'+ch];cta(ch);}
   });
-  ['o1','o2','o3','o4','s1','s2','s3','s4'].forEach(id=>{const cb=document.getElementById(id);if(cb&&d['chk_'+id]!==undefined){cb.checked=d['chk_'+id];cta2(id);}});
+  if(d.prioOrder && Array.isArray(d.prioOrder)){prioOrder=d.prioOrder;renderPrio();}
+  const ec=document.getElementById('pm-content');if(ec&&d.pm_content)ec.value=d.pm_content;
+  const eo=document.getElementById('pm-ops');if(eo&&d.pm_ops)eo.value=d.pm_ops;
 }
 
 const KFS=['blog-1','blog-2','blog-3','insta-1','insta-2','insta-3','yt-1','yt-2','yt-3','kakao-1','kakao-2','kakao-3','home-1','home-2','home-3'];
