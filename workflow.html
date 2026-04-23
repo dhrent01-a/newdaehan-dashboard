@@ -28,6 +28,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 .date-chip{font-family:var(--mono);font-size:12px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;}
 .dash-link{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:8px;padding:5px 14px;font-size:13px;color:var(--green);text-decoration:none;font-weight:600;transition:all .2s;}
 .dash-link:hover{background:var(--green);color:#fff;}
+.tool-link{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 13px;font-size:12px;color:var(--text2);text-decoration:none;font-weight:500;transition:all .2s;}
+.tool-link:hover{background:var(--surface3);color:var(--text);border-color:var(--border2);}
 .save-chip{font-family:var(--mono);font-size:11px;color:var(--text3);}
 
 .nav{background:#fff;border-bottom:2px solid var(--border);padding:0 28px;display:flex;position:sticky;top:56px;z-index:99;box-shadow:0 1px 3px rgba(0,0,0,.04);}
@@ -179,6 +181,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
   <div class="hdr-right">
     <span class="date-chip" id="today-chip"></span>
     <span class="save-chip" id="save-chip">—</span>
+    <a class="tool-link" href="https://whereispost.com/keyword/" target="_blank">🔍 키워드마스터</a>
+    <a class="tool-link" href="https://whereispost.com/" target="_blank">📋 노출확인</a>
     <a class="dash-link" href="https://dhrent01-a.github.io/newdaehan-dashboard/" target="_blank">📊 콘텐츠 대시보드 →</a>
   </div>
 </div>
