@@ -609,12 +609,10 @@ async function saveToSheet() {
       good: ch === 'blog' ? (document.getElementById('kpi-good')?.value || '') : '',
       fix : ch === 'blog' ? (document.getElementById('kpi-fix')?.value  || '') : '',
     }));
-    // 하이라이트 + 월간종합 — 월별 덮어쓰기용
+    // 하이라이트 — 월별 덮어쓰기용
     const wfKpiExtra = {
       year: y, month: m,
       highlights: highlights,
-      good: document.getElementById('kpi-good')?.value || '',
-      fix:  document.getElementById('kpi-fix')?.value  || '',
     };
 
     // 분기 방향 수집
@@ -640,7 +638,7 @@ async function saveToSheet() {
     chKeys.forEach(ch=>{const v=document.getElementById('memo-'+ch)?.value||'';if(v)memos['채널_'+ch]=v;});
     const hasMemo = Object.keys(memos).length > 0;
 
-    const payload = { wfCh, wfKpi, wfQuarter };
+    const payload = { wfCh, wfKpi, wfQuarter, wfKpiExtra };
     if (hasMemo) {
       payload.wfLog = { date: today, memos };
     }
