@@ -320,53 +320,73 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
     <button class="btn btn-g" onclick="saveKpi()">이 달 저장</button>
   </div>
 
-  <div class="sec">채널별 월간 KPI</div>
+  <div class="sec">채널 유입 집계</div>
   <div class="card" style="overflow-x:auto;">
     <table class="ktbl">
       <thead><tr><th>채널</th><th style="text-align:right;">지표 1</th><th style="text-align:right;">지표 2</th><th style="text-align:right;">지표 3</th><th style="text-align:right;">전월비</th><th>메모</th></tr></thead>
       <tbody>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#03C75A;"></div>네이버 블로그</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">순방문자 · 평균사용시간 · 상위노출</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-blog-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">순방문자</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-blog-2" placeholder="0:00" style="width:60px;"><div style="font-size:10px;color:var(--text3);">평균사용시간</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-blog-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">상위노출</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#03C75A;"></div>네이버 블로그</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">월간 방문자 · 블로그→홈페이지 유입 · 링크클릭</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-blog-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">월간 방문자</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-blog-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">홈페이지 유입</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-blog-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">링크 클릭</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-blog">—</span></td>
           <td><input class="knote" id="kn-blog" placeholder="특이사항…"></td>
         </tr>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#E1306C;"></div>인스타그램</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">팔로워 · 평균도달 · 프로필클릭</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-insta-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">팔로워</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-insta-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">평균 도달</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-insta-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">프로필 클릭</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#E1306C;"></div>인스타그램</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">프로필 방문 · 외부링크 클릭 · 리틀리→예약</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-insta-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">프로필 방문</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-insta-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">외부링크 클릭</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-insta-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">리틀리→예약</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-insta">—</span></td>
           <td><input class="knote" id="kn-insta" placeholder="특이사항…"></td>
         </tr>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#FF0000;"></div>유튜브</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">구독자 · 총조회수 · CTR</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">구독자</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">총 조회수</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-yt-3" placeholder="0.0%" style="width:60px;"><div style="font-size:10px;color:var(--text3);">CTR</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#FF0000;"></div>유튜브</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">개설 후 입력 — 구독자 · 조회수 · 홈페이지유입</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-1" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">구독자</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-2" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">조회수</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-yt-3" type="number" min="0" placeholder="—" disabled style="opacity:.4;"><div style="font-size:10px;color:var(--text3);">홈페이지 유입</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-yt">—</span></td>
-          <td><input class="knote" id="kn-yt" placeholder="특이사항…"></td>
+          <td><input class="knote" id="kn-yt" placeholder="개설 예정…"></td>
         </tr>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#FEE500;border:1px solid #555;"></div>카카오채널</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">친구수 · 월문의 · 자동응답</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#FEE500;border:1px solid #aaa;"></div>카카오채널</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">친구수 · 예약페이지 접근수 (소식/AI채팅)</div></td>
           <td style="text-align:right;"><input class="ki" id="k-kakao-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">친구 수</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-kakao-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">월 문의</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-kakao-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">자동응답</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-kakao-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">예약페이지 접근</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-kakao-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">신규 친구</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-kakao">—</span></td>
           <td><input class="knote" id="kn-kakao" placeholder="특이사항…"></td>
         </tr>
         <tr>
-          <td><div class="kbadge"><div class="kdot" style="background:#1a6b4a;"></div>자사 홈페이지</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">직접예약 · 전환율 · 총예약</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">직접 예약</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-2" placeholder="0.0%" style="width:60px;"><div style="font-size:10px;color:var(--text3);">전환율</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-3" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">총 예약</div></td>
+          <td><div class="kbadge"><div class="kdot" style="background:#1a6b4a;"></div>자사 홈페이지</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">총 방문자 · 직접예약 · 자사전환율</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">총 방문자</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">직접 예약</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-3" placeholder="0.0%" style="width:60px;"><div style="font-size:10px;color:var(--text3);">자사 전환율</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-home">—</span></td>
           <td><input class="knote" id="kn-home" placeholder="특이사항…"></td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+
+  <div class="sec">콘텐츠 성과 하이라이트 <span style="font-size:10px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;">전월 발행 글 중 상위 3개 · 매월 말 1회 기록</span></div>
+  <div class="card" style="overflow-x:auto;">
+    <table class="ktbl" id="highlight-tbl">
+      <thead><tr>
+        <th style="width:90px;">발행일</th>
+        <th>제목</th>
+        <th style="width:120px;">키워드</th>
+        <th style="text-align:right;width:80px;">조회수</th>
+        <th style="width:160px;">특이사항</th>
+        <th style="width:40px;"></th>
+      </tr></thead>
+      <tbody id="highlight-body"></tbody>
+    </table>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn" onclick="addHighlight()">+ 행 추가</button>
+      <button class="btn btn-g" onclick="saveKpi()">저장</button>
+    </div>
   </div>
 
   <div class="sec">월간 종합</div>
@@ -742,6 +762,7 @@ const KFS=['blog-1','blog-2','blog-3','insta-1','insta-2','insta-3','yt-1','yt-2
 const KNS=['blog','insta','yt','kakao','home'];
 function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date().getFullYear();const m=document.getElementById('kpi-month')?.value||(new Date().getMonth()+1);return P+'kpi_'+y+'_'+m;}
 function saveKpi(){
+  saveHighlights();
   const d={};
   KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
   KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
@@ -752,6 +773,7 @@ function saveKpi(){
   calcTrend();tick();
 }
 function loadKpi(){
+  loadHighlights();
   const d=JSON.parse(localStorage.getItem(kpiKey())||'{}');
   KFS.forEach(f=>{const el=document.getElementById('k-'+f);if(el)el.value=d['k_'+f]||'';});
   KNS.forEach(f=>{const el=document.getElementById('kn-'+f);if(el)el.value=d['n_'+f]||'';});
@@ -900,6 +922,55 @@ function initSelects(){
   const qs=document.getElementById('q-sel');if(qs)qs.value='Q'+Math.ceil((new Date().getMonth()+1)/3);
 }
 
+
+
+// ── 콘텐츠 성과 하이라이트 ────────────────────────────────────────
+let highlights = [];
+
+function renderHighlights() {
+  const tbody = document.getElementById('highlight-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!highlights.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);font-size:12px;padding:16px;">전월 성과 게시글을 기록해주세요</td></tr>';
+    return;
+  }
+  highlights.forEach((h, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input class="knote" value="${h.date||''}" placeholder="2026-04-01" oninput="highlights[${i}].date=this.value"></td>
+      <td><input class="knote" value="${h.title||''}" placeholder="게시글 제목" oninput="highlights[${i}].title=this.value" style="width:100%;"></td>
+      <td><input class="knote" value="${h.keyword||''}" placeholder="제주 렌터카" oninput="highlights[${i}].keyword=this.value"></td>
+      <td style="text-align:right;"><input class="ki" type="number" value="${h.views||''}" placeholder="0" oninput="highlights[${i}].views=this.value" style="width:70px;"></td>
+      <td><input class="knote" value="${h.note||''}" placeholder="급상승, 시즌 이슈 등" oninput="highlights[${i}].note=this.value" style="width:100%;"></td>
+      <td><button class="plan-del" onclick="removeHighlight(${i})">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addHighlight() {
+  highlights.push({date:'', title:'', keyword:'', views:'', note:''});
+  renderHighlights();
+}
+
+function removeHighlight(i) {
+  highlights.splice(i, 1);
+  renderHighlights();
+}
+
+function loadHighlights() {
+  const y = document.getElementById('kpi-year')?.value || new Date().getFullYear();
+  const m = document.getElementById('kpi-month')?.value || (new Date().getMonth()+1);
+  const stored = localStorage.getItem(P+'hl_'+y+'_'+m);
+  highlights = stored ? JSON.parse(stored) : [];
+  renderHighlights();
+}
+
+function saveHighlights() {
+  const y = document.getElementById('kpi-year')?.value || new Date().getFullYear();
+  const m = document.getElementById('kpi-month')?.value || (new Date().getMonth()+1);
+  localStorage.setItem(P+'hl_'+y+'_'+m, JSON.stringify(highlights));
+}
 
 // ── URL 관리 ──────────────────────────────────────────────────────
 const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree',
