@@ -770,6 +770,7 @@ const KNS=['blog','insta','yt','kakao','home'];
 function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date().getFullYear();const m=document.getElementById('kpi-month')?.value||(new Date().getMonth()+1);return P+'kpi_'+y+'_'+m;}
 function saveKpi(){
   saveHighlights();
+  saveToSheet(); // 구글시트 동기화
   const d={};
   KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
   KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
@@ -805,6 +806,7 @@ function calcTrend(){
 }
 
 function saveQ(){
+  saveToSheet(); // 구글시트 동기화
   const q=document.getElementById('q-sel')?.value||'Q2';
   const d={goal:document.getElementById('q-goal')?.value||'',strat:document.getElementById('q-strat')?.value||'',good:document.getElementById('q-good')?.value||'',fix:document.getElementById('q-fix')?.value||''};
   ['blog','insta','yt','kakao'].forEach(ch=>{d['p_'+ch]=document.getElementById('pos-'+ch)?.value||'';d['pm_'+ch]=document.getElementById('pos-'+ch+'-m')?.value||'';});
