@@ -317,7 +317,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
       <option>9</option><option>10</option><option>11</option><option>12</option>
     </select>
     <span style="font-size:11px;color:var(--text3);">월</span>
-    <button class="btn btn-g" onclick="saveKpi()">이 달 저장</button>
+    <button class="btn btn-g" onclick="saveKpiAll()">이 달 저장</button>
   </div>
 
   <div class="sec">채널 유입 집계</div>
@@ -385,7 +385,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
     </table>
     <div class="btn-row" style="margin-top:12px;">
       <button class="btn" onclick="addHighlight()">+ 행 추가</button>
-      <button class="btn btn-g" onclick="saveKpi()">저장</button>
+      <button class="btn btn-g" onclick="saveHighlights();saveKpiToSheet()">저장</button>
     </div>
   </div>
 
@@ -601,6 +601,12 @@ function calcConvRate() {
   }
 }
 
+
+function saveKpiAll() {
+  saveKpi();         // localStorage 저장
+  saveKpiToSheet();  // 구글시트 전송 (KPI + 하이라이트)
+}
+
 async function saveKpiToSheet() {
   try {
     gsStatus('loading');
@@ -647,20 +653,7 @@ async function saveToSheet() {
       memo    : document.getElementById('memo-'+ch)?.value || '',
     }));
 
-    // KPI 수집 — DOM이 숨겨져 있을 수 있으므로 null 체크 강화
-    const kpiYearEl = document.getElementById('kpi-year');
-    const kpiMonthEl = document.getElementById('kpi-month');
-    const y = (kpiYearEl && kpiYearEl.value) ? kpiYearEl.value : new Date().getFullYear();
-    const m = (kpiMonthEl && kpiMonthEl.value) ? kpiMonthEl.value : (new Date().getMonth()+1);
-    const wfKpi = ['blog','insta','yt','kakao','home'].map(ch => ({
-      year: y, month: m, ch,
-      v1: document.getElementById('k-'+ch+'-1')?.value || '',
-      v2: document.getElementById('k-'+ch+'-2')?.value || '',
-      v3: document.getElementById('k-'+ch+'-3')?.value || '',
-      note: document.getElementById('kn-'+ch)?.value || '',
-      good: ch === 'blog' ? (document.getElementById('kpi-good')?.value || '') : '',
-      fix : ch === 'blog' ? (document.getElementById('kpi-fix')?.value  || '') : '',
-    }));
+
     // 분기 방향 수집
     const q = document.getElementById('q-sel')?.value || 'Q2';
     const wfQuarter = [{
@@ -684,7 +677,7 @@ async function saveToSheet() {
     chKeys.forEach(ch=>{const v=document.getElementById('memo-'+ch)?.value||'';if(v)memos['채널_'+ch]=v;});
     const hasMemo = Object.keys(memos).length > 0;
 
-    const payload = { wfCh, wfKpi, wfQuarter };
+    const payload = { wfCh, wfQuarter }; // wfKpi는 saveKpiToSheet에서만 처리
     if (hasMemo) {
       payload.wfLog = { date: today, memos };
     }
@@ -817,9 +810,6 @@ function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date()
 let _kpiSaveTimer = null;
 function saveKpi(){
   saveHighlights();
-  // debounce: 500ms 내 연속 호출 시 마지막 1회만 전송
-  clearTimeout(_kpiSaveTimer);
-  _kpiSaveTimer = setTimeout(() => saveKpiToSheet(), 500);
   const d={};
   KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
   KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
