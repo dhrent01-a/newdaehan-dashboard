@@ -174,7 +174,6 @@ input[type=number]{font-family:var(--mono);}
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div class="gs-btn" id="gs-status-btn" onclick="openGS()"><div class="gs-dot" id="gs-dot"></div><span id="gs-label">구글시트</span></div>
-    <button class="gs-btn" onclick="showGsSetup()" style="font-size:11px;padding:4px 10px;">⚙ 연동설정</button>
     <div class="sync-time" id="sync-time">불러오는 중…</div>
   </div>
 </div>
@@ -757,8 +756,10 @@ function openU(id)  { const u=document.getElementById(id)?.value.trim(); if(u) w
 function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else alert('구글시트 링크를 먼저 등록해주세요.'); }
 function flowGo(id,e) {
   e.preventDefault();
+  // localStorage 우선 (loadUrlsFromSheet로 구글시트와 동기화됨)
   const u = localStorage.getItem(id) || document.getElementById(id)?.value.trim();
-  if(u) window.open(u,'_blank'); else { alert('워크보드 URL 관리 탭에서 URL을 먼저 저장해주세요.'); }
+  if(u) window.open(u,'_blank');
+  else alert('워크보드 ⑤ URL 관리 탭에서 '+id+' URL을 먼저 저장해주세요.');
 }
 
 /* ── 탭 전환 ── */
