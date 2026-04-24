@@ -661,12 +661,6 @@ async function saveToSheet() {
       good: ch === 'blog' ? (document.getElementById('kpi-good')?.value || '') : '',
       fix : ch === 'blog' ? (document.getElementById('kpi-fix')?.value  || '') : '',
     }));
-    // 하이라이트 — 월별 덮어쓰기용
-    const wfKpiExtra = {
-      year: y, month: m,
-      highlights: highlights,
-    };
-
     // 분기 방향 수집
     const q = document.getElementById('q-sel')?.value || 'Q2';
     const wfQuarter = [{
@@ -690,7 +684,7 @@ async function saveToSheet() {
     chKeys.forEach(ch=>{const v=document.getElementById('memo-'+ch)?.value||'';if(v)memos['채널_'+ch]=v;});
     const hasMemo = Object.keys(memos).length > 0;
 
-    const payload = { wfCh, wfKpi, wfQuarter, wfKpiExtra };
+    const payload = { wfCh, wfKpi, wfQuarter };
     if (hasMemo) {
       payload.wfLog = { date: today, memos };
     }
@@ -820,9 +814,12 @@ function load(){
 const KFS=['blog-1','blog-2','blog-3','insta-1','insta-2','insta-3','yt-1','yt-2','yt-3','kakao-1','kakao-2','kakao-3','home-1','home-2','home-3'];
 const KNS=['blog','insta','yt','kakao','home'];
 function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date().getFullYear();const m=document.getElementById('kpi-month')?.value||(new Date().getMonth()+1);return P+'kpi_'+y+'_'+m;}
+let _kpiSaveTimer = null;
 function saveKpi(){
   saveHighlights();
-  saveKpiToSheet(); // KPI만 구글시트 동기화 (채널현황 제외)
+  // debounce: 500ms 내 연속 호출 시 마지막 1회만 전송
+  clearTimeout(_kpiSaveTimer);
+  _kpiSaveTimer = setTimeout(() => saveKpiToSheet(), 500);
   const d={};
   KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
   KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
