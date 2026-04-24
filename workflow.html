@@ -359,9 +359,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         </tr>
         <tr>
           <td><div class="kbadge"><div class="kdot" style="background:#1a6b4a;"></div>자사 홈페이지</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">총 방문자 · 직접예약 · 자사전환율</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">총 방문자</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-2" type="number" min="0" placeholder="0"><div style="font-size:10px;color:var(--text3);">직접 예약</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-3" placeholder="0.0%" style="width:60px;"><div style="font-size:10px;color:var(--text3);">자사 전환율</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">플랫폼 1위 예약</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-2" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">직접 예약</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-3" placeholder="—" style="width:60px;" readonly><div style="font-size:10px;color:var(--text3);">자사 전환율</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-home">—</span></td>
           <td><input class="knote" id="kn-home" placeholder="특이사항…"></td>
         </tr>
@@ -588,6 +588,53 @@ function saveAll() {
   tick('저장됨 ' + new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
 }
 
+
+async 
+function calcConvRate() {
+  const plat = parseFloat(document.getElementById('k-home-1')?.value) || 0;
+  const direct = parseFloat(document.getElementById('k-home-2')?.value) || 0;
+  const el = document.getElementById('k-home-3');
+  if (!el) return;
+  if (plat > 0) {
+    el.value = (direct / plat * 100).toFixed(1) + '%';
+  } else {
+    el.value = '';
+  }
+}
+
+async function saveKpiToSheet() {
+  try {
+    gsStatus('loading');
+    const kpiYearEl = document.getElementById('kpi-year');
+    const kpiMonthEl = document.getElementById('kpi-month');
+    const y = (kpiYearEl && kpiYearEl.value) ? kpiYearEl.value : new Date().getFullYear();
+    const m = (kpiMonthEl && kpiMonthEl.value) ? kpiMonthEl.value : (new Date().getMonth()+1);
+
+    const wfKpi = ['blog','insta','yt','kakao','home'].map(ch => ({
+      year: y, month: m, ch,
+      v1: document.getElementById('k-'+ch+'-1')?.value || '',
+      v2: document.getElementById('k-'+ch+'-2')?.value || '',
+      v3: document.getElementById('k-'+ch+'-3')?.value || '',
+      note: document.getElementById('kn-'+ch)?.value || '',
+      good: ch === 'blog' ? (document.getElementById('kpi-good')?.value || '') : '',
+      fix : ch === 'blog' ? (document.getElementById('kpi-fix')?.value  || '') : '',
+    }));
+    const wfKpiExtra = { year: y, month: m, highlights: highlights };
+
+    const res = await fetch(DASH, {
+      method: 'POST', redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ wfKpi, wfKpiExtra }),
+    });
+    const json = JSON.parse(await res.text());
+    if (!json.ok) throw new Error(json.error);
+    gsStatus('ok');
+  } catch(e) {
+    gsStatus('err');
+    console.error('saveKpiToSheet error:', e);
+  }
+}
+
 async function saveToSheet() {
   try {
     gsStatus('loading');
@@ -776,7 +823,7 @@ const KNS=['blog','insta','yt','kakao','home'];
 function kpiKey(){const y=document.getElementById('kpi-year')?.value||new Date().getFullYear();const m=document.getElementById('kpi-month')?.value||(new Date().getMonth()+1);return P+'kpi_'+y+'_'+m;}
 function saveKpi(){
   saveHighlights();
-  saveToSheet(); // 구글시트 동기화
+  saveKpiToSheet(); // KPI만 구글시트 동기화 (채널현황 제외)
   const d={};
   KFS.forEach(f=>{d['k_'+f]=document.getElementById('k-'+f)?.value||'';});
   KNS.forEach(f=>{d['n_'+f]=document.getElementById('kn-'+f)?.value||'';});
@@ -800,7 +847,7 @@ function calcTrend(){
   const m=parseInt(document.getElementById('kpi-month')?.value)||(new Date().getMonth()+1);
   const pm=m===1?12:m-1,py=m===1?y-1:y;
   const prev=JSON.parse(localStorage.getItem(P+'kpi_'+py+'_'+pm)||'{}');
-  [['blog','k-blog-1'],['insta','k-insta-1'],['yt','k-yt-1'],['kakao','k-kakao-1'],['home','k-home-1']].forEach(([ch,fid])=>{
+  [['blog','k-blog-1'],['insta','k-insta-1'],['yt','k-yt-1'],['kakao','k-kakao-1'],['home','k-home-2']].forEach(([ch,fid])=>{
     const cur=parseFloat(document.getElementById(fid)?.value)||0;
     const prv=parseFloat(prev['k_'+fid.replace('k-','')]||'0')||0;
     const el=document.getElementById('tr-'+ch);if(!el)return;
