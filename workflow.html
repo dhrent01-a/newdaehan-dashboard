@@ -359,11 +359,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
         </tr>
         <tr>
           <td><div class="kbadge"><div class="kdot" style="background:#1a6b4a;"></div>자사 홈페이지</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">총 방문자 · 직접예약 · 자사전환율</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">플랫폼 1위 예약</div></td>
-          <td style="text-align:right;"><input class="ki" id="k-home-2" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">직접 예약</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-1" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">플랫폼 1위 예약수</div></td>
+          <td style="text-align:right;"><input class="ki" id="k-home-2" type="number" min="0" placeholder="0" oninput="calcConvRate()"><div style="font-size:10px;color:var(--text3);">자사 직접 예약수</div></td>
           <td style="text-align:right;"><input class="ki" id="k-home-3" placeholder="—" style="width:60px;" readonly><div style="font-size:10px;color:var(--text3);">자사 전환율</div></td>
           <td style="text-align:right;"><span class="trend flat" id="tr-home">—</span></td>
-          <td><input class="knote" id="kn-home" placeholder="특이사항…"></td>
+          <td><input class="knote" id="kn-home" placeholder="총예약건수: 000건 | 플랫폼명: ○○페이"></td>
         </tr>
       </tbody>
     </table>
@@ -707,26 +707,52 @@ function applyQuarter(r) {
   set('pos-kakao',   r.pKakao); set('pos-kakao-m',   r.pmKakao);
 }
 
-async function loadDash() {
+async async function loadDash() {
   try {
-    const r = await fetch(DASH+'?action=load',{method:'GET',redirect:'follow'});
+    // 워크플로우_KPI home 데이터에서 최근월 읽기
+    const r = await fetch(DASH+'?action=loadWf',{method:'GET',redirect:'follow'});
     const j = JSON.parse(await r.text());
-    if(!j.ok||!j.data.booking||!j.data.booking.length) return;
-    const last = j.data.booking[j.data.booking.length-1];
-    const total=parseInt(last.total)||0, direct=parseInt(last.direct)||0, plat=parseInt(last.plat)||0;
-    const rate = total>0?(direct/total*100).toFixed(1):0;
-    const gap = direct-plat;
-    const toGoal = total>0?((0.5-direct/total)*100).toFixed(1):null;
-    document.getElementById('cv-direct').textContent = direct+'건';
-    document.getElementById('cv-rate').textContent   = rate+'%';
-    document.getElementById('cv-gap').textContent    = (gap>=0?'+':'')+gap+'건';
-    document.getElementById('cv-gap').className      = 'conv-val '+(gap>=0?'g':'o');
-    if(toGoal!==null){
-      const gn=parseFloat(toGoal);
-      document.getElementById('cv-goal').textContent = gn<=0?'🎉 목표 달성!':'+'+gn+'%p 필요';
-      document.getElementById('cv-goal').className   = 'conv-val '+(gn<=0?'g':'b');
+    if (!j.ok || !j.data.kpi || !j.data.kpi.length) return;
+
+    // home 채널 최근월 데이터
+    const homeRows = j.data.kpi
+      .filter(r => r.ch === 'home')
+      .sort((a,b) => (a.year*100+parseInt(a.month))-(b.year*100+parseInt(b.month)));
+    if (!homeRows.length) return;
+
+    const last = homeRows[homeRows.length-1];
+    const prev = homeRows.length > 1 ? homeRows[homeRows.length-2] : null;
+
+    const direct = parseInt(last.v2)||0;
+    const plat   = parseInt(last.v1)||0;
+    const rate   = parseFloat(last.v3)||0;
+    const ratePct = rate < 1 ? (rate*100) : rate;
+
+    // 전환율 표시
+    const el_direct = document.getElementById('cv-direct');
+    const el_rate   = document.getElementById('cv-rate');
+    const el_gap    = document.getElementById('cv-gap');
+    const el_goal   = document.getElementById('cv-goal');
+
+    if (el_direct) el_direct.textContent = direct ? direct.toLocaleString()+'건' : '—';
+    if (el_rate)   el_rate.textContent   = ratePct ? ratePct.toFixed(1)+'%' : '—';
+
+    // 플랫폼 대비
+    const gap = direct - plat;
+    if (el_gap) {
+      el_gap.textContent = (gap >= 0 ? '+' : '') + gap.toLocaleString() + '건';
+      el_gap.className = 'conv-val ' + (gap >= 0 ? 'g' : 'o');
     }
-  } catch(e){}
+
+    // 목표(50%)까지
+    if (el_goal) {
+      const toGoal = (50 - ratePct).toFixed(1);
+      el_goal.textContent = toGoal > 0 ? toGoal + '%p' : '🎉 달성';
+      el_goal.className = 'conv-val ' + (toGoal <= 0 ? 'g' : 'b');
+    }
+  } catch(e) {
+    console.error('loadDash 오류:', e);
+  }
 }
 
 function openSaved(k,e){e.preventDefault();const u=localStorage.getItem(k)||'';if(u)window.open(u,'_blank');else alert('워크보드 ⑤ URL 관리 탭에서 '+k+' URL을 먼저 저장해주세요.');}
