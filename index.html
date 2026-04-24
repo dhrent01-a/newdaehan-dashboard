@@ -520,7 +520,7 @@ input[type=number]{font-family:var(--mono);}
 /* ══════════════════════════════════════════════
    구글시트 연동
 ══════════════════════════════════════════════ */
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwclQ2utVs05nNJ9MnS0c1PgPXvmVNWZsO_rOf6_toBUq5hP6HjViBdwbHnHrFFFWiM/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxx8-Jg4T-REAH-wQrLvAWxQ96hnApPaqaAb3HzqrbZbC9abMmuo4tt9ljCqmIlvgMC/exec';
 
 function getScriptUrl() { return APPS_SCRIPT_URL; }
 
@@ -546,6 +546,7 @@ async function loadFromSheet() {
     try { json = JSON.parse(text); } catch(e) { throw new Error('응답 파싱 실패'); }
     if (!json.ok) throw new Error(json.error);
     const d = json.data;
+    if (d.urls) loadUrlsFromSheet(d.urls); // 워크보드와 URL 공유
 
     if (d.booking && d.booking.length > 0) {
       const tbody = document.getElementById('booking-body');
@@ -737,7 +738,21 @@ function showGsSetup() { go('booking', document.querySelectorAll('.tab')[2]); }
 const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree','url-threads','url-kakao','url-youtube','url-gs-view','url-gs-edit','faq-url','rule-url','tmpl-url'];
 function saveUrls() { URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); }); tick('URL 저장'); }
 function saveFaq()  { ['faq-url','rule-url','tmpl-url'].forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k,el.value); }); tick('링크 저장'); }
-function loadUrls() { URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; }); }
+function loadUrls() {
+  URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; });
+}
+function loadUrlsFromSheet(sheetUrls) {
+  if (!sheetUrls) return;
+  const ids = ['url-home','url-booking-p','url-blog','url-insta','url-linktree','url-threads','url-kakao','url-youtube','url-gs-view','url-gs-edit'];
+  ids.forEach(k => {
+    const sheetVal = sheetUrls['url_'+k];
+    if (sheetVal) {
+      localStorage.setItem(k, sheetVal);
+      const el = document.getElementById(k);
+      if (el) el.value = sheetVal;
+    }
+  });
+}
 function openU(id)  { const u=document.getElementById(id)?.value.trim(); if(u) window.open(u,'_blank'); else alert('URL을 먼저 입력해주세요.'); }
 function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else alert('구글시트 링크를 먼저 등록해주세요.'); }
 function flowGo(id,e) {
