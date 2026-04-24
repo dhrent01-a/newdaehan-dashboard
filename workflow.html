@@ -528,8 +528,9 @@ async function loadFromSheet() {
     if (d.urls) loadUrlsFromSheet(d.urls); // URL 크로스 디바이스 동기화
 
     // KPI/분기 캐시 저장 (모바일 크로스 디바이스용)
-    if (d.kpi && d.kpi.length)     _gsKpi = d.kpi;
+    if (d.kpi && d.kpi.length)         _gsKpi = d.kpi;
     if (d.quarter && d.quarter.length) _gsQuarter = d.quarter;
+    if (d.kpiExtra && d.kpiExtra.length) _gsKpiExtra = d.kpiExtra;
 
     // 채널 현황 복원
     if (d.ch && d.ch.length) {
@@ -622,6 +623,11 @@ async function saveKpiToSheet() {
     });
     const json = JSON.parse(await res.text());
     if (!json.ok) throw new Error(json.error);
+
+    // 캐시 업데이트 — 저장한 데이터를 _gsKpi에 반영 (월 이동 후 복귀 시 최신 데이터 유지)
+    const otherRows = _gsKpi.filter(r => !(String(r.year)===String(y) && String(r.month)===String(m)));
+    _gsKpi = [...otherRows, ...wfKpi];
+
     gsStatus('ok');
   } catch(e) {
     gsStatus('err');
@@ -837,6 +843,7 @@ function saveKpi(){
 // ── 구글시트 데이터 메모리 캐시 (크로스 디바이스 핵심) ──────────
 let _gsKpi = [];     // 워크플로우_KPI 전체
 let _gsQuarter = []; // 워크플로우_분기방향 전체
+let _gsKpiExtra = []; // KPI성과기록 전체
 
 function loadKpi(){
   loadHighlights();
@@ -1055,6 +1062,19 @@ function removeHighlight(i) {
 function loadHighlights() {
   const y = document.getElementById('kpi-year')?.value || new Date().getFullYear();
   const m = document.getElementById('kpi-month')?.value || (new Date().getMonth()+1);
+  const ym = String(y) + '-' + String(m).padStart(2,'0');
+
+  // 1순위: 구글시트 캐시
+  if (_gsKpiExtra.length) {
+    const rows = _gsKpiExtra.filter(r => r.yearMonth === ym);
+    if (rows.length) {
+      highlights = rows.map(r => ({ date: r.date, title: r.title, keyword: r.keyword, views: r.views, note: r.note }));
+      renderHighlights();
+      return;
+    }
+  }
+
+  // 2순위: localStorage
   const stored = localStorage.getItem(P+'hl_'+y+'_'+m);
   highlights = stored ? JSON.parse(stored) : [];
   renderHighlights();
@@ -1063,7 +1083,13 @@ function loadHighlights() {
 function saveHighlights() {
   const y = document.getElementById('kpi-year')?.value || new Date().getFullYear();
   const m = document.getElementById('kpi-month')?.value || (new Date().getMonth()+1);
+  const ym = String(y) + '-' + String(m).padStart(2,'0');
   localStorage.setItem(P+'hl_'+y+'_'+m, JSON.stringify(highlights));
+
+  // 캐시 업데이트
+  const others = _gsKpiExtra.filter(r => r.yearMonth !== ym);
+  const newRows = highlights.map(h => ({ yearMonth: ym, date: h.date||'', title: h.title||'', keyword: h.keyword||'', views: h.views||'', note: h.note||'' }));
+  _gsKpiExtra = [...others, ...newRows];
 }
 
 // ── URL 관리 ──────────────────────────────────────────────────────
