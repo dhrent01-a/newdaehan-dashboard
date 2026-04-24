@@ -56,7 +56,7 @@
 - 업무일지 날짜별 저장 (`업무일지` 탭, Date 객체 처리 포함)
 - KPI 성과 하이라이트 제목 기준 덮어쓰기 (`KPI성과기록` 탭)
 - 오늘의 업무체크 클릭 순서 우선순위 숫자 표시
-- KPI/분기 데이터 — 구글시트 캐시(`_gsKpi`, `_gsQuarter`) 기반으로 모바일 크로스 디바이스 정상 작동
+- KPI/분기/성과기록 — 구글시트 캐시 기반 모바일 크로스 디바이스 정상 작동
 
 ### newdaehan_dashboard.html (콘텐츠 대시보드)
 
@@ -87,11 +87,11 @@
 | `콘텐츠스케줄` | 콘텐츠 일정 |
 | `워크플로우_분기방향` | 분기별 전략 메모 |
 | `업무일지` | 날짜별 업무 기록 |
-| `KPI성과기록` | 성과 하이라이트 (제목 기준 덮어쓰기) |
+| `KPI성과기록` | 성과 하이라이트 (제목 기준 덮어쓰기), `readKpiExtra`로 읽기 포함 |
 
 API 액션:
 - `?action=load` → 대시보드 데이터 (booking / osmu / syncLog / meta)
-- `?action=loadWf` → 워크보드 데이터 (ch / kpi / sched / quarter / urls)
+- `?action=loadWf` → 워크보드 데이터 (ch / kpi / sched / quarter / urls / kpiExtra)
 
 ---
 
@@ -102,9 +102,14 @@ API 액션:
 - `saveKpiAll()` → KPI + 성과 하이라이트
 - `saveToSheet()` → 채널현황만
 
-### 크로스 디바이스 구조
-- KPI/분기: `loadFromSheet()` 호출 시 `_gsKpi`, `_gsQuarter` 메모리 캐시 저장 → 월/분기 셀렉터 변경 시 캐시 우선 읽기 → localStorage는 같은 기기 fallback
-- URL: 구글시트 `메타설정` 탭 `url_*` 키로 저장
+### 크로스 디바이스 캐시 구조
+| 캐시 변수 | 데이터 | 업데이트 시점 |
+|-----------|--------|--------------|
+| `_gsKpi` | 워크플로우_KPI 전체 | loadFromSheet + saveKpiToSheet 성공 시 |
+| `_gsQuarter` | 워크플로우_분기방향 전체 | loadFromSheet |
+| `_gsKpiExtra` | KPI성과기록 전체 | loadFromSheet + saveHighlights 시 |
+
+- 월/분기 셀렉터 변경 시 캐시 우선 읽기 → localStorage는 같은 기기 fallback
 - `loadFromSheet()`는 `setTimeout(..., 100)`으로 지연 호출 (셀렉터 세팅 완료 후 실행 보장)
 
 ### 주의 사항
@@ -113,7 +118,7 @@ API 액션:
 - **APPS_SCRIPT_URL:** `newdaehan_dashboard.html` 상단 `const APPS_SCRIPT_URL = '...'` 하드코딩
 - **CORS:** Apps Script는 CORS 자동 허용 — `setHeader()` 사용 금지 (TextOutput 미지원)
 - **삭제:** `deleteRows()` 대신 `clearContents()` 사용
-- **KPI v3 형식:** 코드에서 `rate < 1 ? rate*100 : rate` 로 소수/% 양쪽 처리 중. 구글시트에서 % 형식으로 통일 권장
+- **KPI v3 형식:** 코드에서 `rate < 1 ? rate*100 : rate` 로 소수/% 양쪽 처리 중. 구글시트에서 % 형식 통일 권장
 
 ### 과거 해결된 버그 (재발 방지)
 
@@ -125,7 +130,9 @@ API 액션:
 | 크로스 디바이스 URL sync 실패 | localStorage 기반 저장 | HTML에 URL 하드코딩 |
 | Edit 버튼 scope 오류 | `btn.closest('td')` 이동 후 깨짐 | `btn.closest('tr')` 변경 |
 | loadDash 파싱 오류 | `async` 3중 중복 | `async function loadDash()` 수정 |
-| 모바일 KPI/분기 데이터 0 표시 | `loadKpi()`/`loadQ()`가 localStorage만 읽음 | 구글시트 캐시(`_gsKpi`, `_gsQuarter`) 구조로 변경 |
+| 모바일 KPI/분기 데이터 0 표시 | `loadKpi()`/`loadQ()`가 localStorage만 읽음 | 구글시트 캐시 구조로 변경 |
+| 월 이동 후 복귀 시 KPI 리셋 | 저장 후 캐시 미갱신 | `saveKpiToSheet` 성공 시 `_gsKpi` 업데이트 |
+| 성과기록 모든 달 비어있음 | `loadHighlights()`가 localStorage만 읽음 + `loadWf`에 kpiExtra 미포함 | `readKpiExtra` 함수 추가 + `_gsKpiExtra` 캐시 구조 적용 |
 | 목표선 바닥에 붙는 문제 | 플랫폼 예약 스케일 대비 자사 예약 너무 작음 | 목표선 제거, 달성률 바로 대체 |
 
 ---
