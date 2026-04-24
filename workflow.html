@@ -888,6 +888,8 @@ function loadQ(){
     const m=document.getElementById('pos-'+ch+'-m');if(m)m.value=d['pm_'+ch]||'';
   });
 }
+
+function calcTrend(){
   const y=parseInt(document.getElementById('kpi-year')?.value)||new Date().getFullYear();
   const m=parseInt(document.getElementById('kpi-month')?.value)||(new Date().getMonth()+1);
   const pm=m===1?12:m-1,py=m===1?y-1:y;
@@ -905,7 +907,6 @@ function loadQ(){
 
 let _qSaveTimer = null;
 function saveQ(){
-  // debounce: 연속 입력 시 마지막 1회만 구글시트 전송
   clearTimeout(_qSaveTimer);
   _qSaveTimer = setTimeout(() => saveToSheet(), 800);
   const q=document.getElementById('q-sel')?.value||'Q2';
@@ -914,15 +915,6 @@ function saveQ(){
   localStorage.setItem(P+'q_'+q,JSON.stringify(d));
   saveToSheet();
   tick();
-}
-function loadQ(){
-  const q=document.getElementById('q-sel')?.value||'Q2';
-  const d=JSON.parse(localStorage.getItem(P+'q_'+q)||'{}');
-  ['goal','strat','good','fix'].forEach(f=>{const el=document.getElementById('q-'+f);if(el)el.value=d[f]||'';});
-  ['blog','insta','yt','kakao'].forEach(ch=>{
-    const s=document.getElementById('pos-'+ch);if(s&&d['p_'+ch])s.value=d['p_'+ch];
-    const m=document.getElementById('pos-'+ch+'-m');if(m)m.value=d['pm_'+ch]||'';
-  });
 }
 
 /* ── 주간 캘린더 — 구글시트 스케줄 데이터 우선 사용 ── */
