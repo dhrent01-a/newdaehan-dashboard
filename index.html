@@ -756,10 +756,28 @@ function openU(id)  { const u=document.getElementById(id)?.value.trim(); if(u) w
 function openGS()   { const u=document.getElementById('url-gs-view')?.value.trim(); if(u) window.open(u,'_blank'); else alert('구글시트 링크를 먼저 등록해주세요.'); }
 function flowGo(id,e) {
   e.preventDefault();
-  // localStorage 우선 (loadUrlsFromSheet로 구글시트와 동기화됨)
   const u = localStorage.getItem(id) || document.getElementById(id)?.value.trim();
-  if(u) window.open(u,'_blank');
-  else alert('워크보드 ⑤ URL 관리 탭에서 '+id+' URL을 먼저 저장해주세요.');
+  if (u) {
+    window.open(u, '_blank');
+  } else {
+    // localStorage에 없으면 구글시트에서 즉시 가져와서 열기
+    const scriptUrl = getScriptUrl();
+    if (!scriptUrl) { alert('워크보드 ⑤ URL 관리 탭에서 ' + id + ' URL을 먼저 저장해주세요.'); return; }
+    fetch(scriptUrl + '?action=loadWf', { method:'GET', redirect:'follow' })
+      .then(r => r.text())
+      .then(t => {
+        const j = JSON.parse(t);
+        if (j.ok && j.data.urls) {
+          loadUrlsFromSheet(j.data.urls);
+          const u2 = localStorage.getItem(id);
+          if (u2) window.open(u2, '_blank');
+          else alert('워크보드 ⑤ URL 관리 탭에서 ' + id + ' URL을 먼저 저장해주세요.');
+        } else {
+          alert('워크보드 ⑤ URL 관리 탭에서 ' + id + ' URL을 먼저 저장해주세요.');
+        }
+      })
+      .catch(() => alert('워크보드 ⑤ URL 관리 탭에서 ' + id + ' URL을 먼저 저장해주세요.'));
+  }
 }
 
 /* ── 탭 전환 ── */
