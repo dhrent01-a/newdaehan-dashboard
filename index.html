@@ -910,13 +910,13 @@ function renderConvData(kpiRows) {
   if (!chartEl) return;
 
   const maxVal = Math.max(...homeRows.map(r => Math.max(parseFloat(r.v1)||0, parseFloat(r.v2)||0)), 1);
-  // 목표선 높이: maxVal 대비 50% 위치 (차트 높이 120px 기준)
-  const goalLineBottom = Math.min(goal, 100).toFixed(1);
+  // 목표선: 차트 바 높이 120px 기준, goal%에 해당하는 픽셀 위치
+  const goalPx = Math.min((goal / 100) * 120, 120).toFixed(1);
 
-  chartEl.innerHTML = `<div style="display:inline-flex;align-items:flex-end;position:relative;padding-bottom:20px;">
-    <!-- 목표선 -->
-    <div style="position:absolute;left:0;right:0;bottom:calc(20px + ${goalLineBottom}%);border-top:2px dashed #f59e0b;pointer-events:none;z-index:1;">
-      <span style="position:absolute;right:0;top:-16px;font-size:10px;color:#f59e0b;font-weight:700;white-space:nowrap;">목표 50%</span>
+  chartEl.innerHTML = `<div style="display:inline-flex;align-items:flex-end;position:relative;">
+    <!-- 목표선: 바 영역(120px) 기준 하단에서 goalPx 위치 -->
+    <div style="position:absolute;left:0;right:0;bottom:${goalPx}px;border-top:2px dashed #f59e0b;pointer-events:none;z-index:1;">
+      <span style="position:absolute;right:0;top:-16px;font-size:10px;color:#f59e0b;font-weight:700;white-space:nowrap;">목표 ${goal}%</span>
     </div>
     ${homeRows.map(r => {
       const p = parseFloat(r.v1)||0;
@@ -926,13 +926,13 @@ function renderConvData(kpiRows) {
       const pBar = (p/maxVal*100).toFixed(1);
       const dBar = (d/maxVal*100).toFixed(1);
       const lbl = r.year + '.' + String(r.month).padStart(2,'0');
-      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-right:12px;min-width:56px;vertical-align:bottom;">
+      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-right:12px;min-width:56px;">
         <div style="font-size:10px;color:var(--green);font-weight:700;">${rtPct.toFixed(1)}%</div>
         <div style="display:flex;gap:3px;align-items:flex-end;height:120px;position:relative;">
           <div style="width:20px;background:#d1dbe8;border-radius:3px 3px 0 0;" title="플랫폼1위 ${p}건" data-h="${pBar}"></div>
           <div style="width:20px;background:#0d9e6e;border-radius:3px 3px 0 0;" title="자사 ${d}건" data-h="${dBar}"></div>
         </div>
-        <div style="font-size:10px;color:var(--text3);">${lbl}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;">${lbl}</div>
       </div>`;
     }).join('')}
   </div>`;
