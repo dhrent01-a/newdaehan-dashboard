@@ -1107,6 +1107,7 @@ function tick(msg) {
 /* ── 초기화 ── */
 window.onload = function() {
   loadUrls();
+  loadFromSheet(); // 구글시트에서 URL 등 최신 데이터 동기화
   document.querySelectorAll('.ss').forEach(colorSel);
   calcOsmu();
   updateBookingMetrics();
