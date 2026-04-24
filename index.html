@@ -457,7 +457,6 @@ input[type=number]{font-family:var(--mono);}
     <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text3);">
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#0d9e6e;display:inline-block;"></span>자사 직접 예약</span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#d1dbe8;display:inline-block;"></span>플랫폼 1위 예약</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:18px;height:2px;border-top:2px dashed #f59e0b;display:inline-block;"></span>목표선 <span id="cv-goal-label3">10</span>%</span>
     </div>
   </div>
 
@@ -910,14 +909,8 @@ function renderConvData(kpiRows) {
   if (!chartEl) return;
 
   const maxVal = Math.max(...homeRows.map(r => Math.max(parseFloat(r.v1)||0, parseFloat(r.v2)||0)), 1);
-  // 목표선: 차트 바 높이 120px 기준, goal%에 해당하는 픽셀 위치
-  const goalPx = Math.min((goal / 100) * 120, 120).toFixed(1);
 
   chartEl.innerHTML = `<div style="display:inline-flex;align-items:flex-end;position:relative;">
-    <!-- 목표선: 바 영역(120px) 기준 하단에서 goalPx 위치 -->
-    <div style="position:absolute;left:0;right:0;bottom:${goalPx}px;border-top:2px dashed #f59e0b;pointer-events:none;z-index:1;">
-      <span style="position:absolute;right:0;top:-16px;font-size:10px;color:#f59e0b;font-weight:700;white-space:nowrap;">목표 ${goal}%</span>
-    </div>
     ${homeRows.map(r => {
       const p = parseFloat(r.v1)||0;
       const d = parseFloat(r.v2)||0;
