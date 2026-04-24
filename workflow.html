@@ -525,6 +525,7 @@ async function loadFromSheet() {
     const json = JSON.parse(await res.text());
     if (!json.ok) throw new Error(json.error);
     const d = json.data;
+    if (d.urls) loadUrlsFromSheet(d.urls); // URL 크로스 디바이스 동기화
 
     // 채널 현황 복원
     if (d.ch && d.ch.length) {
@@ -1022,9 +1023,30 @@ const URL_IDS = ['url-home','url-booking-p','url-blog','url-insta','url-linktree
 
 function saveUrls() {
   URL_IDS.forEach(k => { const el=document.getElementById(k); if(el) localStorage.setItem(k, el.value); });
+  // 구글시트에도 저장 (크로스 디바이스 공유)
+  const urlData = {};
+  URL_IDS.forEach(k => { urlData['url_'+k] = localStorage.getItem(k) || ''; });
+  fetch(DASH, {
+    method:'POST', redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ urls: urlData })
+  }).catch(e => console.error('URL 저장 오류:', e));
 }
 function loadUrls() {
+  // localStorage 먼저 (빠른 렌더링)
   URL_IDS.forEach(k => { const v=localStorage.getItem(k); const el=document.getElementById(k); if(v&&el) el.value=v; });
+}
+function loadUrlsFromSheet(sheetUrls) {
+  // 구글시트 값으로 업데이트 (크로스 디바이스 공유)
+  if (!sheetUrls) return;
+  URL_IDS.forEach(k => {
+    const sheetVal = sheetUrls['url_'+k];
+    if (sheetVal) {
+      localStorage.setItem(k, sheetVal);
+      const el = document.getElementById(k);
+      if (el) el.value = sheetVal;
+    }
+  });
 }
 function openU(id) {
   const u = document.getElementById(id)?.value.trim();
