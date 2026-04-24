@@ -527,6 +527,10 @@ async function loadFromSheet() {
     const d = json.data;
     if (d.urls) loadUrlsFromSheet(d.urls); // URL 크로스 디바이스 동기화
 
+    // KPI/분기 캐시 저장 (모바일 크로스 디바이스용)
+    if (d.kpi && d.kpi.length)     _gsKpi = d.kpi;
+    if (d.quarter && d.quarter.length) _gsQuarter = d.quarter;
+
     // 채널 현황 복원
     if (d.ch && d.ch.length) {
       const map = {};
@@ -544,21 +548,9 @@ async function loadFromSheet() {
       });
     }
 
-    // KPI 복원 — 현재 선택된 월 데이터만
+    // KPI 복원 — loadKpi()가 캐시에서 읽음
     if (d.kpi && d.kpi.length) {
-      const y = document.getElementById('kpi-year')?.value;
-      const m = document.getElementById('kpi-month')?.value;
-      const rows = d.kpi.filter(r => String(r.year)===String(y) && String(r.month)===String(m));
-      rows.forEach(r => {
-        const v1 = document.getElementById('k-'+r.ch+'-1'); if(v1) v1.value = r.v1 || '';
-        const v2 = document.getElementById('k-'+r.ch+'-2'); if(v2) v2.value = r.v2 || '';
-        const v3 = document.getElementById('k-'+r.ch+'-3'); if(v3) v3.value = r.v3 || '';
-        const kn = document.getElementById('kn-'+r.ch); if(kn) kn.value = r.note || '';
-        if (r.ch === 'blog') {
-          const g = document.getElementById('kpi-good'); if(g) g.value = r.good || '';
-          const f = document.getElementById('kpi-fix');  if(f) f.value = r.fix  || '';
-        }
-      });
+      loadKpi();
       calcTrend();
     }
 
@@ -569,12 +561,8 @@ async function loadFromSheet() {
       renderWeek();
     }
 
-    // 분기 방향 복원
-    if (d.quarter && d.quarter.length) {
-      const q = document.getElementById('q-sel')?.value || 'Q2';
-      const r = d.quarter.find(x => x.q === q);
-      if (r) applyQuarter(r);
-    }
+    // 분기 방향 복원 — loadQ()가 캐시에서 읽음
+    if (d.quarter && d.quarter.length) loadQ();
 
     gsStatus('ok');
   } catch(err) {
@@ -846,8 +834,35 @@ function saveKpi(){
   saveToSheet();
   calcTrend();tick();
 }
+// ── 구글시트 데이터 메모리 캐시 (크로스 디바이스 핵심) ──────────
+let _gsKpi = [];     // 워크플로우_KPI 전체
+let _gsQuarter = []; // 워크플로우_분기방향 전체
+
 function loadKpi(){
   loadHighlights();
+  const y = document.getElementById('kpi-year')?.value;
+  const m = document.getElementById('kpi-month')?.value;
+
+  // 1순위: 구글시트 캐시
+  if (_gsKpi.length) {
+    const rows = _gsKpi.filter(r => String(r.year)===String(y) && String(r.month)===String(m));
+    if (rows.length) {
+      rows.forEach(r => {
+        const v1 = document.getElementById('k-'+r.ch+'-1'); if(v1) v1.value = r.v1 || '';
+        const v2 = document.getElementById('k-'+r.ch+'-2'); if(v2) v2.value = r.v2 || '';
+        const v3 = document.getElementById('k-'+r.ch+'-3'); if(v3) v3.value = r.v3 || '';
+        const kn = document.getElementById('kn-'+r.ch); if(kn) kn.value = r.note || '';
+        if (r.ch === 'blog') {
+          const g = document.getElementById('kpi-good'); if(g) g.value = r.good || '';
+          const f = document.getElementById('kpi-fix');  if(f) f.value = r.fix  || '';
+        }
+      });
+      calcTrend();
+      return;
+    }
+  }
+
+  // 2순위: localStorage (같은 기기에서 저장한 경우)
   const d=JSON.parse(localStorage.getItem(kpiKey())||'{}');
   KFS.forEach(f=>{const el=document.getElementById('k-'+f);if(el)el.value=d['k_'+f]||'';});
   KNS.forEach(f=>{const el=document.getElementById('kn-'+f);if(el)el.value=d['n_'+f]||'';});
@@ -855,7 +870,24 @@ function loadKpi(){
   const fx=document.getElementById('kpi-fix');if(fx)fx.value=d.fix||'';
   calcTrend();
 }
-function calcTrend(){
+
+function loadQ(){
+  const q=document.getElementById('q-sel')?.value||'Q2';
+
+  // 1순위: 구글시트 캐시
+  if (_gsQuarter.length) {
+    const r = _gsQuarter.find(x => x.q === q);
+    if (r) { applyQuarter(r); return; }
+  }
+
+  // 2순위: localStorage
+  const d=JSON.parse(localStorage.getItem(P+'q_'+q)||'{}');
+  ['goal','strat','good','fix'].forEach(f=>{const el=document.getElementById('q-'+f);if(el)el.value=d[f]||'';});
+  ['blog','insta','yt','kakao'].forEach(ch=>{
+    const s=document.getElementById('pos-'+ch);if(s&&d['p_'+ch])s.value=d['p_'+ch];
+    const m=document.getElementById('pos-'+ch+'-m');if(m)m.value=d['pm_'+ch]||'';
+  });
+}
   const y=parseInt(document.getElementById('kpi-year')?.value)||new Date().getFullYear();
   const m=parseInt(document.getElementById('kpi-month')?.value)||(new Date().getMonth()+1);
   const pm=m===1?12:m-1,py=m===1?y-1:y;
@@ -1086,7 +1118,7 @@ window.onload=function(){
   document.querySelectorAll('.st-sel').forEach(cSt);
   // 구글시트에서 최신 데이터 불러오기
   loadDash();       // 예약 전환율
-  loadFromSheet();  // 워크플로우 데이터
+  setTimeout(loadFromSheet, 100);  // 워크플로우 데이터 (셀렉터 세팅 후 실행 보장)
   // 30초마다 자동 저장
   setInterval(()=>{ save(); }, 30000);
 };
