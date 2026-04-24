@@ -181,7 +181,7 @@ input[type=number]{font-family:var(--mono);}
 <nav class="nav">
   <button class="tab on" onclick="go('osmu',this)">① OSMU 콘텐츠 현황 <span class="tab-cnt" id="cnt-osmu">0</span></button>
   <button class="tab"    onclick="go('trip',this)">② 출장 플랜</button>
-  <button class="tab"    onclick="go('booking',this)">③ 월별 예약 전환율</button>
+  <button class="tab"    onclick="go('booking',this)">③ 자사 전환율 추이</button>
   <button class="tab"    onclick="go('sync',this)">④ 공지 동기화 <span class="tab-cnt" id="cnt-sync">0/5</span></button>
 </nav>
 
@@ -410,49 +410,49 @@ input[type=number]{font-family:var(--mono);}
 <!-- ③ 월별 예약 전환율 -->
 <div id="sheet-booking" class="sheet">
 
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-    <span style="font-size:12px;color:var(--text2);">비교 플랫폼</span>
-    <input type="text" id="platform-name" value="카카오T" style="width:110px;font-weight:600;" oninput="syncPlatformLabel()">
-    <span style="font-size:12px;color:var(--text3);">— 상위 플랫폼 1개 vs 자사 직접 예약 비교</span>
+  <!-- 읽기 전용 — 데이터 입력은 워크보드 ② KPI에서 -->
+  <div style="font-size:12px;color:var(--text3);margin-bottom:16px;padding:8px 14px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;gap:8px;">
+    <span>📊 워크보드 월간 KPI 데이터 기반 자동 표시</span>
+    <span style="margin-left:auto;color:var(--text3);">입력 → 워크보드 ② KPI</span>
   </div>
 
-  <div class="metrics">
-    <div class="metric"><div class="met-label">이번달 총 예약</div><div class="met-val" id="bm-total">840</div><div class="met-sub">건</div></div>
-    <div class="metric"><div class="met-label" id="bm-plat-label">카카오T 예약</div><div class="met-val o" id="bm-plat">380</div><div class="met-sub"><span id="bm-plat-rate">45.2%</span></div></div>
-    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="bm-direct">310</div><div class="met-sub"><span id="bm-direct-rate">36.9%</span></div></div>
-    <div class="metric"><div class="met-label">자사 vs 플랫폼</div><div class="met-val o" id="bm-gap">−70건</div><div class="met-sub"><span id="bm-diff" class="up">↑ 5.3%p</span> 전월비(자사)</div></div>
+  <!-- 핵심 지표 카드 -->
+  <div class="metrics" id="conv-metrics">
+    <div class="metric"><div class="met-label">최근월 총 예약</div><div class="met-val" id="cv-total">—</div><div class="met-sub" id="cv-total-memo">—</div></div>
+    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="cv-direct">—</div><div class="met-sub">건</div></div>
+    <div class="metric"><div class="met-label">자사 전환율</div><div class="met-val g" id="cv-rate">—</div><div class="met-sub">목표 50%</div></div>
+    <div class="metric"><div class="met-label">전월 대비</div><div class="met-val" id="cv-diff">—</div><div class="met-sub" id="cv-diff-sub">%p</div></div>
   </div>
 
+  <!-- 목표 달성률 바 -->
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:700;color:var(--text2);">목표(50%) 달성률</span>
+      <span style="font-size:13px;font-weight:700;color:var(--green);" id="cv-goal-pct">—</span>
+    </div>
+    <div style="background:var(--surface3);border-radius:99px;height:12px;overflow:hidden;">
+      <div id="cv-goal-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#0d9e6e,#34d399);transition:width .6s ease;width:0%;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px;">
+      <span>0%</span><span style="color:var(--green);">목표 50%</span><span>100%</span>
+    </div>
+  </div>
+
+  <!-- 월별 추이 차트 -->
   <div class="card">
-    <div class="card-hdr"><div class="card-title">월별 추이</div><div class="card-note">자사 직접 목표 50%</div></div>
-    <div class="bar-chart" id="bar-chart"></div>
-    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text3);">
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--green);display:inline-block;"></span>자사</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--orange);display:inline-block;"></span><span id="chart-plat-label">카카오T</span></span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--border);display:inline-block;"></span>나머지</span>
+    <div class="card-hdr">
+      <div class="card-title">월별 자사 전환율 추이</div>
+      <div class="card-note" id="conv-trend-note">—</div>
+    </div>
+    <div id="conv-chart" style="width:100%;overflow-x:auto;"></div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text3);">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#0d9e6e;display:inline-block;"></span>자사 직접 예약</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#d1dbe8;display:inline-block;"></span>플랫폼 1위 예약</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:18px;height:2px;border-top:2px dashed #f59e0b;display:inline-block;"></span>목표선 50%</span>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">월별 데이터 입력</div><div class="card-note">직접 입력 → 구글시트 반영</div></div>
-    <div class="tw">
-      <table>
-        <thead><tr><th>월</th><th>총 예약</th><th id="th-plat">카카오T</th><th>자사 직접</th><th>자사 비율</th><th>플랫폼 대비</th><th>전월 대비</th><th>메모</th></tr></thead>
-        <tbody id="booking-body">
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.01</td><td><input type="number" value="620" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="320" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="140" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">22.6%<div class="prog"><div class="prog-fill" style="width:22.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−180건</td><td class="td-diff gr" style="font-size:12px;font-family:var(--mono);">기준</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.02</td><td><input type="number" value="710" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="350" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="220" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.0%<div class="prog"><div class="prog-fill" style="width:31%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−130건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 8.4%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;">2025.03</td><td><input type="number" value="790" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="370" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="250" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate">31.6%<div class="prog"><div class="prog-fill" style="width:31.6%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;">−120건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 0.6%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-          <tr><td style="font-family:var(--mono);font-size:12px;font-weight:700;">2025.04</td><td><input type="number" value="840" style="width:78px;" oninput="calcBooking(this)"></td><td><input type="number" value="380" style="width:78px;" oninput="calcBooking(this)" class="inp-p"></td><td><input type="number" value="310" style="width:78px;" oninput="calcBooking(this)" class="inp-d"></td><td class="td-rate g" style="font-weight:700;">36.9%<div class="prog"><div class="prog-fill" style="width:36.9%;"></div></div></td><td class="td-vs o" style="font-family:var(--mono);font-size:12px;font-weight:700;">−70건</td><td class="td-diff up" style="font-size:12px;font-family:var(--mono);">↑ 5.3%p</td><td><input type="text" placeholder="메모" style="width:88px;"></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="btn-row">
-      <button class="btn" onclick="addBookingRow()">+ 월 추가</button>
-      <button class="btn btn-g" onclick="saveAll()">저장</button>
-    </div>
-  </div>
 </div>
-
 <!-- ④ 공지 동기화 -->
 <div id="sheet-sync" class="sheet">
   <div class="card">
@@ -778,6 +778,102 @@ function flowGo(id,e) {
       })
       .catch(() => alert('워크보드 ⑤ URL 관리 탭에서 ' + id + ' URL을 먼저 저장해주세요.'));
   }
+}
+
+
+// ── 자사 전환율 추이 (읽기 전용, 워크플로우_KPI home 데이터 기반) ────
+function renderConvData(kpiRows) {
+  if (!kpiRows || !kpiRows.length) return;
+
+  // home 채널 데이터만 추출, 월 기준 정렬
+  const homeRows = kpiRows
+    .filter(r => r.ch === 'home' && r.v2)
+    .sort((a, b) => (a.year*100 + parseInt(a.month)) - (b.year*100 + parseInt(b.month)));
+
+  if (!homeRows.length) return;
+
+  // 최근월 지표 카드
+  const latest = homeRows[homeRows.length - 1];
+  const prev   = homeRows.length > 1 ? homeRows[homeRows.length - 2] : null;
+
+  const direct = parseFloat(latest.v2) || 0;
+  const plat   = parseFloat(latest.v1) || 0;
+  const rate   = parseFloat(latest.v3) || 0;
+  const memo   = latest.note || '';
+
+  document.getElementById('cv-total').textContent = memo ? memo.split('|')[0].replace(/[^0-9]/g,'') + '건' : '—';
+  document.getElementById('cv-total-memo').textContent = memo || '워크보드 KPI 메모 참고';
+  document.getElementById('cv-direct').textContent = direct ? direct.toLocaleString() + '건' : '—';
+
+  // 전환율 표시
+  const rateDisplay = rate > 0 ? (rate < 1 ? (rate*100).toFixed(1) : rate.toFixed(1)) + '%' : '—';
+  document.getElementById('cv-rate').textContent = rateDisplay;
+
+  // 전월 대비
+  if (prev) {
+    const prevRate = parseFloat(prev.v3) || 0;
+    const prevRatePct = prevRate < 1 ? prevRate*100 : prevRate;
+    const currRatePct = rate < 1 ? rate*100 : rate;
+    const diff = (currRatePct - prevRatePct).toFixed(1);
+    const diffEl = document.getElementById('cv-diff');
+    diffEl.textContent = (diff >= 0 ? '▲ +' : '▼ ') + diff + '%p';
+    diffEl.style.color = diff >= 0 ? 'var(--green)' : 'var(--red,#c0392b)';
+  }
+
+  // 목표 달성률 바
+  const ratePct = rate < 1 ? rate*100 : rate;
+  const goalPct = Math.min((ratePct / 50 * 100), 100).toFixed(0);
+  document.getElementById('cv-goal-pct').textContent = goalPct + '% 달성';
+  document.getElementById('cv-goal-bar').style.width = goalPct + '%';
+
+  // 추이 코멘트
+  const rising = homeRows.slice(-3).every((r,i,a) => {
+    if (i === 0) return true;
+    const cur = parseFloat(r.v3)||0;
+    const prv = parseFloat(a[i-1].v3)||0;
+    return cur >= prv;
+  });
+  document.getElementById('conv-trend-note').textContent = rising && homeRows.length >= 2 ? '📈 상승 추이' : '';
+
+  // 바 차트 렌더링
+  const chartEl = document.getElementById('conv-chart');
+  if (!chartEl) return;
+
+  const maxVal = Math.max(...homeRows.map(r => Math.max(parseFloat(r.v1)||0, parseFloat(r.v2)||0)), 1);
+
+  chartEl.innerHTML = homeRows.map(r => {
+    const p = parseFloat(r.v1)||0;
+    const d = parseFloat(r.v2)||0;
+    const rt = parseFloat(r.v3)||0;
+    const rtPct = rt < 1 ? rt*100 : rt;
+    const pBar = (p/maxVal*100).toFixed(1);
+    const dBar = (d/maxVal*100).toFixed(1);
+    const targetBar = (maxVal > 0 ? Math.min(maxVal*0.5/maxVal*100, 100) : 50).toFixed(1);
+    const lbl = r.year + '.' + String(r.month).padStart(2,'0');
+    return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-right:12px;min-width:56px;vertical-align:bottom;">
+      <div style="font-size:10px;color:var(--green);font-weight:700;">${rtPct.toFixed(1)}%</div>
+      <div style="display:flex;gap:3px;align-items:flex-end;height:120px;position:relative;">
+        <div style="width:20px;background:#d1dbe8;border-radius:3px 3px 0 0;" title="플랫폼1위 ${p}건" data-h="${pBar}"></div>
+        <div style="width:20px;background:#0d9e6e;border-radius:3px 3px 0 0;" title="자사 ${d}건" data-h="${dBar}"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  // 높이 설정
+  chartEl.querySelectorAll('[data-h]').forEach(el => {
+    el.style.height = Math.max(parseFloat(el.dataset.h), 2) + 'px';
+  });
+}
+
+async function loadConvData() {
+  try {
+    const url = getScriptUrl();
+    if (!url) return;
+    const res = await fetch(url + '?action=loadWf', { method:'GET', redirect:'follow' });
+    const j = JSON.parse(await res.text());
+    if (j.ok && j.data.kpi) renderConvData(j.data.kpi);
+  } catch(e) { console.error('자사전환율 로드 오류:', e); }
 }
 
 /* ── 탭 전환 ── */
@@ -1125,7 +1221,8 @@ function tick(msg) {
 /* ── 초기화 ── */
 window.onload = function() {
   loadUrls();
-  loadFromSheet(); // 구글시트에서 URL 등 최신 데이터 동기화
+  loadFromSheet();
+  loadConvData(); // 자사 전환율 추이 데이터
   document.querySelectorAll('.ss').forEach(colorSel);
   calcOsmu();
   updateBookingMetrics();
