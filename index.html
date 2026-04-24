@@ -411,30 +411,39 @@ input[type=number]{font-family:var(--mono);}
 <div id="sheet-booking" class="sheet">
 
   <!-- 읽기 전용 — 데이터 입력은 워크보드 ② KPI에서 -->
-  <div style="font-size:12px;color:var(--text3);margin-bottom:16px;padding:8px 14px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;gap:8px;">
+  <div style="font-size:12px;color:var(--text3);margin-bottom:16px;padding:8px 14px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
     <span>📊 워크보드 월간 KPI 데이터 기반 자동 표시</span>
     <span style="margin-left:auto;color:var(--text3);">입력 → 워크보드 ② KPI</span>
+    <span style="display:flex;align-items:center;gap:6px;margin-left:16px;">
+      <label style="font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap;">목표 전환율</label>
+      <input type="number" id="conv-goal-input" min="1" max="100" value="10"
+        style="width:54px;padding:3px 7px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--mono);text-align:center;background:var(--surface);color:var(--text);"
+        onchange="onGoalChange()" oninput="onGoalChange()">
+      <span style="font-size:12px;color:var(--text2);">%</span>
+    </span>
   </div>
 
   <!-- 핵심 지표 카드 -->
   <div class="metrics" id="conv-metrics">
-    <div class="metric"><div class="met-label">최근월 총 예약</div><div class="met-val" id="cv-total">—</div><div class="met-sub" id="cv-total-memo">—</div></div>
-    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="cv-direct">—</div><div class="met-sub">건</div></div>
-    <div class="metric"><div class="met-label">자사 전환율</div><div class="met-val g" id="cv-rate">—</div><div class="met-sub">목표 50%</div></div>
+    <div class="metric"><div class="met-label">최근월 총 예약 <span title="워크보드 ② KPI → home 채널 메모란에 입력한 총예약건수" style="cursor:help;color:var(--text3);font-size:11px;">ⓘ</span></div><div class="met-val" id="cv-total">—</div><div class="met-sub" id="cv-total-memo">워크보드 KPI 메모 참고</div></div>
+    <div class="metric"><div class="met-label">자사 직접 예약</div><div class="met-val g" id="cv-direct">—</div><div class="met-sub">건 (워크보드 KPI 입력값)</div></div>
+    <div class="metric"><div class="met-label">자사 전환율 <span title="자사 직접 예약 ÷ 1위 플랫폼 예약 × 100. 플랫폼 의존도 대비 자사 예약 비율." style="cursor:help;color:var(--text3);font-size:11px;">ⓘ</span></div><div class="met-val g" id="cv-rate">—</div><div class="met-sub" id="cv-rate-sub">목표 <span id="cv-goal-label">10</span>%</div></div>
     <div class="metric"><div class="met-label">전월 대비</div><div class="met-val" id="cv-diff">—</div><div class="met-sub" id="cv-diff-sub">%p</div></div>
   </div>
 
   <!-- 목표 달성률 바 -->
   <div class="card" style="margin-bottom:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <span style="font-size:13px;font-weight:700;color:var(--text2);">목표(50%) 달성률</span>
+      <span style="font-size:13px;font-weight:700;color:var(--text2);">목표 달성률
+        <span style="font-weight:400;color:var(--text3);font-size:11px;" title="1위 플랫폼 예약 대비 자사 직접 예약 비율. 플랫폼 의존도를 줄이고 자사 채널로 직접 유입을 늘리는 것이 목표.">ⓘ 1위 플랫폼 대비 자사 예약 비율</span>
+      </span>
       <span style="font-size:13px;font-weight:700;color:var(--green);" id="cv-goal-pct">—</span>
     </div>
     <div style="background:var(--surface3);border-radius:99px;height:12px;overflow:hidden;">
       <div id="cv-goal-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#0d9e6e,#34d399);transition:width .6s ease;width:0%;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px;">
-      <span>0%</span><span style="color:var(--green);">목표 50%</span><span>100%</span>
+      <span>0%</span><span style="color:var(--green);">목표 <span id="cv-goal-label2">10</span>%</span><span>100%</span>
     </div>
   </div>
 
@@ -448,7 +457,7 @@ input[type=number]{font-family:var(--mono);}
     <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text3);">
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#0d9e6e;display:inline-block;"></span>자사 직접 예약</span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#d1dbe8;display:inline-block;"></span>플랫폼 1위 예약</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:18px;height:2px;border-top:2px dashed #f59e0b;display:inline-block;"></span>목표선 50%</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:18px;height:2px;border-top:2px dashed #f59e0b;display:inline-block;"></span>목표선 <span id="cv-goal-label3">10</span>%</span>
     </div>
   </div>
 
@@ -546,6 +555,8 @@ async function loadFromSheet() {
     if (!json.ok) throw new Error(json.error);
     const d = json.data;
     if (d.urls) loadUrlsFromSheet(d.urls); // 워크보드와 URL 공유
+    if (d.urls) loadGoalFromUrls(d.urls);  // 목표 전환율 복원
+    if (d.meta) loadGoalFromSheet(d.meta); // 목표 전환율 복원 (fallback)
 
     if (d.booking && d.booking.length > 0) {
       const tbody = document.getElementById('booking-body');
@@ -781,9 +792,70 @@ function flowGo(id,e) {
 }
 
 
+// ── 목표 전환율 관리 ────────────────────────────────────────────
+function getGoal() {
+  return parseFloat(document.getElementById('conv-goal-input')?.value) || 10;
+}
+function syncGoalLabels(g) {
+  ['cv-goal-label','cv-goal-label2','cv-goal-label3'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = g;
+  });
+}
+function onGoalChange() {
+  const g = getGoal();
+  syncGoalLabels(g);
+  // 달성률 바 즉시 재계산
+  const rateEl = document.getElementById('cv-rate');
+  if (rateEl && rateEl.textContent !== '—') {
+    const rate = parseFloat(rateEl.textContent) || 0;
+    updateGoalBar(rate, g);
+  }
+  // 차트 목표선 재렌더 (캐시된 데이터로)
+  if (window._lastKpiRows) renderConvData(window._lastKpiRows);
+  // 구글시트 메타 저장
+  saveGoalToSheet(g);
+}
+function updateGoalBar(ratePct, goal) {
+  const pct = Math.min((ratePct / goal * 100), 100).toFixed(0);
+  const el = document.getElementById('cv-goal-pct');
+  const bar = document.getElementById('cv-goal-bar');
+  if (el) el.textContent = pct + '% 달성';
+  if (bar) bar.style.width = pct + '%';
+}
+function saveGoalToSheet(g) {
+  const url = getScriptUrl(); if (!url) return;
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ urls: { url_conv_goal: String(g) } })
+  }).catch(() => {});
+}
+function loadGoalFromUrls(urls) {
+  if (!urls) return;
+  const val = urls['url_conv_goal'];
+  if (val) {
+    const g = parseFloat(val) || 10;
+    const inp = document.getElementById('conv-goal-input');
+    if (inp) inp.value = g;
+    syncGoalLabels(g);
+  }
+}
+function loadGoalFromSheet(meta) {
+  if (!meta) return;
+  // meta는 { conv_goal: '10', ... } 형태 (readMeta 반환 구조)
+  const val = meta['conv_goal'];
+  if (val) {
+    const g = parseFloat(val) || 10;
+    const inp = document.getElementById('conv-goal-input');
+    if (inp) inp.value = g;
+    syncGoalLabels(g);
+  }
+}
+
 // ── 자사 전환율 추이 (읽기 전용, 워크플로우_KPI home 데이터 기반) ────
 function renderConvData(kpiRows) {
   if (!kpiRows || !kpiRows.length) return;
+  window._lastKpiRows = kpiRows; // 목표값 변경 시 재렌더용 캐시
+  const goal = getGoal();
 
   // home 채널 데이터만 추출, 월 기준 정렬
   const homeRows = kpiRows
@@ -822,9 +894,7 @@ function renderConvData(kpiRows) {
 
   // 목표 달성률 바
   const ratePct = rate < 1 ? rate*100 : rate;
-  const goalPct = Math.min((ratePct / 50 * 100), 100).toFixed(0);
-  document.getElementById('cv-goal-pct').textContent = goalPct + '% 달성';
-  document.getElementById('cv-goal-bar').style.width = goalPct + '%';
+  updateGoalBar(ratePct, goal);
 
   // 추이 코멘트
   const rising = homeRows.slice(-3).every((r,i,a) => {
@@ -840,25 +910,32 @@ function renderConvData(kpiRows) {
   if (!chartEl) return;
 
   const maxVal = Math.max(...homeRows.map(r => Math.max(parseFloat(r.v1)||0, parseFloat(r.v2)||0)), 1);
+  // 목표선 높이: maxVal 대비 50% 위치 (차트 높이 120px 기준)
+  const goalLineBottom = Math.min(goal, 100).toFixed(1);
 
-  chartEl.innerHTML = homeRows.map(r => {
-    const p = parseFloat(r.v1)||0;
-    const d = parseFloat(r.v2)||0;
-    const rt = parseFloat(r.v3)||0;
-    const rtPct = rt < 1 ? rt*100 : rt;
-    const pBar = (p/maxVal*100).toFixed(1);
-    const dBar = (d/maxVal*100).toFixed(1);
-    const targetBar = (maxVal > 0 ? Math.min(maxVal*0.5/maxVal*100, 100) : 50).toFixed(1);
-    const lbl = r.year + '.' + String(r.month).padStart(2,'0');
-    return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-right:12px;min-width:56px;vertical-align:bottom;">
-      <div style="font-size:10px;color:var(--green);font-weight:700;">${rtPct.toFixed(1)}%</div>
-      <div style="display:flex;gap:3px;align-items:flex-end;height:120px;position:relative;">
-        <div style="width:20px;background:#d1dbe8;border-radius:3px 3px 0 0;" title="플랫폼1위 ${p}건" data-h="${pBar}"></div>
-        <div style="width:20px;background:#0d9e6e;border-radius:3px 3px 0 0;" title="자사 ${d}건" data-h="${dBar}"></div>
-      </div>
-      <div style="font-size:10px;color:var(--text3);">${lbl}</div>
-    </div>`;
-  }).join('');
+  chartEl.innerHTML = `<div style="display:inline-flex;align-items:flex-end;position:relative;padding-bottom:20px;">
+    <!-- 목표선 -->
+    <div style="position:absolute;left:0;right:0;bottom:calc(20px + ${goalLineBottom}%);border-top:2px dashed #f59e0b;pointer-events:none;z-index:1;">
+      <span style="position:absolute;right:0;top:-16px;font-size:10px;color:#f59e0b;font-weight:700;white-space:nowrap;">목표 50%</span>
+    </div>
+    ${homeRows.map(r => {
+      const p = parseFloat(r.v1)||0;
+      const d = parseFloat(r.v2)||0;
+      const rt = parseFloat(r.v3)||0;
+      const rtPct = rt < 1 ? rt*100 : rt;
+      const pBar = (p/maxVal*100).toFixed(1);
+      const dBar = (d/maxVal*100).toFixed(1);
+      const lbl = r.year + '.' + String(r.month).padStart(2,'0');
+      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-right:12px;min-width:56px;vertical-align:bottom;">
+        <div style="font-size:10px;color:var(--green);font-weight:700;">${rtPct.toFixed(1)}%</div>
+        <div style="display:flex;gap:3px;align-items:flex-end;height:120px;position:relative;">
+          <div style="width:20px;background:#d1dbe8;border-radius:3px 3px 0 0;" title="플랫폼1위 ${p}건" data-h="${pBar}"></div>
+          <div style="width:20px;background:#0d9e6e;border-radius:3px 3px 0 0;" title="자사 ${d}건" data-h="${dBar}"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);">${lbl}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
 
   // 높이 설정
   chartEl.querySelectorAll('[data-h]').forEach(el => {
