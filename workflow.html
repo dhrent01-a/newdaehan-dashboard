@@ -115,7 +115,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15
 .si.youtube{background:rgba(255,0,0,.1);color:#a01010;}
 .si.kakao{background:rgba(254,229,0,.2);color:#7a6000;}
 .si.threads{background:rgba(100,100,100,.1);color:#4a4a4a;}
-.day-add{font-size:11px;color:var(--text3);cursor:pointer;padding:3px 0;display:block;text-align:center;}
+.day-add{display:none;}
 .day-add:hover{color:var(--green);}
 
 .plan-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
@@ -844,8 +844,11 @@ function calcTrend(){
   });
 }
 
+let _qSaveTimer = null;
 function saveQ(){
-  saveToSheet(); // 구글시트 동기화
+  // debounce: 연속 입력 시 마지막 1회만 구글시트 전송
+  clearTimeout(_qSaveTimer);
+  _qSaveTimer = setTimeout(() => saveToSheet(), 800);
   const q=document.getElementById('q-sel')?.value||'Q2';
   const d={goal:document.getElementById('q-goal')?.value||'',strat:document.getElementById('q-strat')?.value||'',good:document.getElementById('q-good')?.value||'',fix:document.getElementById('q-fix')?.value||''};
   ['blog','insta','yt','kakao'].forEach(ch=>{d['p_'+ch]=document.getElementById('pos-'+ch)?.value||'';d['pm_'+ch]=document.getElementById('pos-'+ch+'-m')?.value||'';});
@@ -899,8 +902,7 @@ function renderWeek(){
       }
       col.appendChild(el);
     });
-    const ab=document.createElement('span');ab.className='day-add';ab.textContent='+ 추가';
-    ab.onclick=()=>addSched(key);col.appendChild(ab);g.appendChild(col);
+    g.appendChild(col);
   });
 }
 
@@ -910,14 +912,7 @@ function chMap(ch) {
   return m[ch] || 'blog';
 }
 
-function addSched(k){
-  const chs=['blog','insta','youtube','kakao','threads'];
-  const c=prompt('채널\n1.블로그 2.인스타 3.유튜브 4.카카오 5.쓰레드\n번호:','1');if(!c)return;
-  const t=prompt('콘텐츠:','');if(!t||!t.trim())return;
-  if(!sched[k])sched[k]=[];
-  sched[k].push({ch:chs[parseInt(c)-1]||'blog',text:t.trim()});
-  localStorage.setItem(P+'sched',JSON.stringify(sched));renderWeek();
-}
+// addSched 제거 — 구글시트에서만 입력
 
 /* ── 콘텐츠 스케줄 구글시트 링크 안내 ── */
 function openSchedSheet() {
