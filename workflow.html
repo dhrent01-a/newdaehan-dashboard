@@ -707,7 +707,7 @@ function applyQuarter(r) {
   set('pos-kakao',   r.pKakao); set('pos-kakao-m',   r.pmKakao);
 }
 
-async async function loadDash() {
+async function loadDash() {
   try {
     // 워크플로우_KPI home 데이터에서 최근월 읽기
     const r = await fetch(DASH+'?action=loadWf',{method:'GET',redirect:'follow'});
