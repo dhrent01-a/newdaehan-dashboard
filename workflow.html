@@ -776,15 +776,31 @@ function loadKpi(){
 
 function loadQ(){
   const q=document.getElementById('q-sel')?.value||'Q2';
+
+  // 전환 전 전체 필드 초기화
+  ['goal','strat','good','fix'].forEach(f=>{
+    const el=document.getElementById('q-'+f); if(el) el.value='';
+  });
+  ['blog','insta','yt','kakao'].forEach(ch=>{
+    const s=document.getElementById('pos-'+ch);
+    if(s) s.selectedIndex=0;
+    const m=document.getElementById('pos-'+ch+'-m'); if(m) m.value='';
+  });
+
+  // 1순위: 구글시트 캐시
   if (_gsQuarter.length) {
     const r = _gsQuarter.find(x => x.q === q);
     if (r) { applyQuarter(r); return; }
   }
+
+  // 2순위: localStorage
   const d=JSON.parse(localStorage.getItem(P+'q_'+q)||'{}');
-  ['goal','strat','good','fix'].forEach(f=>{const el=document.getElementById('q-'+f);if(el)el.value=d[f]||'';});
+  ['goal','strat','good','fix'].forEach(f=>{
+    const el=document.getElementById('q-'+f); if(el) el.value=d[f]||'';
+  });
   ['blog','insta','yt','kakao'].forEach(ch=>{
-    const s=document.getElementById('pos-'+ch);if(s&&d['p_'+ch])s.value=d['p_'+ch];
-    const m=document.getElementById('pos-'+ch+'-m');if(m)m.value=d['pm_'+ch]||'';
+    const s=document.getElementById('pos-'+ch); if(s&&d['p_'+ch]) s.value=d['p_'+ch];
+    const m=document.getElementById('pos-'+ch+'-m'); if(m) m.value=d['pm_'+ch]||'';
   });
 }
 
