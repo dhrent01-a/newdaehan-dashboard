@@ -533,6 +533,7 @@ async function loadFromSheet(){
       if(d.urls){ loadUrlsFromSheet(d.urls); loadGoalFromUrls(d.urls); }
       if(d.osmu&&d.osmu.rows) renderOsmuTable(d.osmu.rows);
       if(d.syncLog){ _syncLog=[...d.syncLog].reverse(); renderTimeline(); }
+      if(d.trip&&d.trip.length) renderTripTable(d.trip);
     }
     if(j2.ok&&j2.data){
       if(j2.data.sched){ _schedData=j2.data.sched; renderChannelCounts(); }
@@ -558,6 +559,7 @@ async function saveAll(){
     const payload={
       osmu:{rows:collectOsmuRows()},
       syncLog:[..._syncLog].reverse(),
+      trip:collectTripRows(),
       urls:urlData,
     };
     const res=await fetch(APPS_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
@@ -775,6 +777,44 @@ function editTripDoc(btn){
   const t1=prompt('문서 제목:',dl.textContent==='문서 미등록'?'':dl.textContent); if(t1===null)return;
   const t2=prompt('구글 Docs 링크:',dl.getAttribute('data-url')||''); if(t2===null)return;
   if(t1.trim())dl.textContent=t1.trim(); if(t2.trim())dl.setAttribute('data-url',t2.trim());
+}
+function collectTripRows(){
+  const rows=[];
+  document.querySelectorAll('#trip-body tr').forEach(tr=>{
+    const inputs=tr.querySelectorAll('input');
+    const dl=tr.querySelector('.doc-link');
+    rows.push({
+      round    : inputs[0]?.value||'',
+      departure: inputs[1]?.value||'',
+      arrival  : inputs[2]?.value||'',
+      count    : inputs[3]?.value||0,
+      docTitle : dl?.textContent.trim()||'',
+      docUrl   : dl?.getAttribute('data-url')||'',
+      status   : tr.querySelector('.ss')?.value||'미승인',
+    });
+  });
+  return rows;
+}
+function renderTripTable(rows){
+  const tb=document.getElementById('trip-body'); if(!tb) return;
+  tb.innerHTML='';
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    const docText=r.docTitle&&r.docTitle!=='문서 미등록'?r.docTitle:'문서 미등록';
+    tr.innerHTML=`
+      <td><input type="text" value="${r.round||''}" placeholder="1회차" style="width:52px;text-align:center;"></td>
+      <td><input type="date" value="${r.departure||''}" style="width:124px;font-family:var(--mono);font-size:12px;"></td>
+      <td><input type="date" value="${r.arrival||''}" style="width:124px;font-family:var(--mono);font-size:12px;"></td>
+      <td><input type="number" value="${r.count||0}" min="0" style="width:52px;text-align:center;font-family:var(--mono);"></td>
+      <td><div style="display:flex;align-items:center;gap:5px;">
+        <a href="#" class="doc-link" data-url="${r.docUrl||''}" onclick="openDocLink(this,event)" style="flex:1;font-size:12px;">${docText}</a>
+        <button class="btn btn-sm" onclick="editTripDoc(this)" style="color:var(--text2);">수정</button>
+      </div></td>
+      <td><select class="ss" onchange="colorSel(this)"><option${r.status==='미승인'?' selected':''}>미승인</option><option${r.status==='승인'?' selected':''}>승인</option><option${r.status==='완료'?' selected':''}>완료</option></select></td>
+      <td><button class="btn btn-sm" onclick="if(confirm('삭제?'))this.closest('tr').remove()" style="color:var(--red);border-color:#ecc;">✕</button></td>`;
+    tb.appendChild(tr);
+    colorSel(tr.querySelector('.ss'));
+  });
 }
 
 /* ═══════════════════════════════════════
