@@ -212,7 +212,7 @@ tr:hover td{background:var(--bg);}
   <!-- 채널별 월간 발행 집계 -->
   <div class="card">
     <div class="card-hdr">
-      <div class="card-title">채널별 월간 발행 현황</div>
+      <div class="card-title">채널별 발행 현황</div>
       <div class="month-row">
         <span style="font-size:12px;color:var(--text2);">기준 월</span>
         <select id="count-year" onchange="renderChannelCounts()"></select>
@@ -220,6 +220,38 @@ tr:hover td{background:var(--bg);}
         <span style="font-size:11px;color:var(--text3);">구글시트 콘텐츠스케줄 집계</span>
       </div>
     </div>
+
+    <!-- 연간 총 발행 요약 -->
+    <div style="display:flex;align-items:center;gap:20px;padding:12px 16px;background:var(--green-light);border:1px solid var(--green-bd);border-radius:9px;margin-bottom:14px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">연간 총 발행</div>
+        <div style="display:flex;align-items:baseline;gap:5px;">
+          <span style="font-size:34px;font-weight:700;font-family:var(--mono);color:var(--green);line-height:1;" id="annual-total">0</span>
+          <span style="font-size:13px;color:var(--green);">건</span>
+          <span style="font-size:11px;color:var(--text3);margin-left:4px;" id="annual-year-label"></span>
+        </div>
+      </div>
+      <div style="width:1px;background:var(--green-bd);align-self:stretch;margin:0 4px;"></div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--green);" id="annual-done">0</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">완료</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--orange);" id="annual-ready">0</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">발행대기</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--text2);" id="annual-wip">0</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">작성중</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--text3);" id="annual-idea">0</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">아이디어</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ch-count-grid" id="ch-count-grid">
       <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:12px;">⏳ 불러오는 중…</div>
     </div>
@@ -584,7 +616,33 @@ function renderChannelCounts(){
   const year=parseInt(document.getElementById('count-year')?.value||new Date().getFullYear());
   const mon =parseInt(document.getElementById('count-month')?.value||(new Date().getMonth()+1));
   const ym  =year+'-'+String(mon).padStart(2,'0');
+
+  // 월간 필터
   const filtered=_schedData.filter(r=>r.date&&String(r.date).slice(0,7)===ym);
+
+  // 연간 필터 (채널 무관 통합)
+  const yearStr=String(year);
+  const annual=_schedData.filter(r=>r.date&&String(r.date).slice(0,4)===yearStr);
+  const annualCounts={total:0,done:0,ready:0,wip:0,idea:0};
+  annual.forEach(r=>{
+    annualCounts.total++;
+    const st=r.status||'아이디어';
+    if(st==='완료')      annualCounts.done++;
+    else if(st==='발행대기') annualCounts.ready++;
+    else if(st==='작성중')  annualCounts.wip++;
+    else                 annualCounts.idea++;
+  });
+
+  // 연간 요약 업데이트
+  const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setEl('annual-total', annualCounts.total);
+  setEl('annual-done',  annualCounts.done);
+  setEl('annual-ready', annualCounts.ready);
+  setEl('annual-wip',   annualCounts.wip);
+  setEl('annual-idea',  annualCounts.idea);
+  setEl('annual-year-label', year+'년 누계 (전 채널)');
+
+  // 채널별 월간 집계
   const counts={};
   CH_COUNT_DEFS.forEach(c=>{counts[c.key]={total:0,done:0,ready:0,wip:0,idea:0};});
   filtered.forEach(r=>{
