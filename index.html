@@ -683,7 +683,8 @@ function colorSel(sel){const m={'완료':'s-done','편집중':'s-wip','기획':'
 function renderOsmuTable(rows){const tb=document.getElementById('osmu-body');if(!tb)return;tb.innerHTML='';rows.forEach(r=>tb.appendChild(buildOsmuRow(r)));tb.querySelectorAll('.ss').forEach(colorSel);}
 function buildOsmuRow(r){
   const tr=document.createElement('tr');
-  const selM=M_OPTS.replace(`<option>${r.month||'05'}월</option>`,`<option selected>${r.month||'05'}월</option>`);
+  const month = r.month || '01월';
+  const selM = M_OPTS.replace(`<option>${month}</option>`, `<option selected>${month}</option>`);
   const mkS=(v)=>S_OPTS.replace(`<option>${v}</option>`,`<option selected>${v}</option>`);
   const hu=(r.url||'')?'has-url':'';
   tr.innerHTML=`
